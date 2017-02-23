@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <style type="text/css" media="screen">
+
+	.ace_editor {
+		border: 1px solid lightgray;
+		margin: auto;
+		height: 200px;
+		width: 60%;
+	}
+	.scrollmargin {
+		height: 80px;
+        text-align: center;
+	}
+
+  #cy-1 {
+    border: 1px solid black;
+    width: 800px;
+    height: 400px;
+  }
+
+  #cy-2 {
+    border: 1px solid black;
+    width: 800px;
+    height: 400px;
+  }
+    </style>
+</head>
+<body>
+<pre id="editor1">SELECT id, artists.name as name2 FROM artists WHERE id < 500 AND id > 200</pre>
+<div class="scrollmargin"></div>
+
+expand: <input class="cb-collapse" type="checkbox"><br>
+start: <input type="text" class="input-parser-start" value="sql_script">
+<button class="btn-code-submit">Submit Code</button>
+
+<!-- NODE GRAPH -->
+
+<div class="container">
+  <div id="cy-1"></div>
+  <div id="cy-2"></div>
+</div>
+  
+<script src="node_modules/ace-builds/src/ace.js"></script>
+<script>
+
+    var editor1 = ace.edit("editor1");
+    editor1.setTheme("ace/theme/tomorrow_night_eighties");
+    editor1.session.setMode("ace/mode/sql");
+    editor1.setAutoScrollEditorIntoView(true);
+    editor1.setOption("maxLines", 30);
+    editor1.setOption("minLines", 5);
+</script>
+<script src="bundle.js"> </script>
+</body>
+</html>
