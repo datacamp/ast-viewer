@@ -7,7 +7,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "cd app/static/frontend && npm i && webpack"
+    "postinstall": "cd app/static/frontend && npm i && node_modules/.bin/webpack"
   },
   "author": "",
   "license": "ISC"
