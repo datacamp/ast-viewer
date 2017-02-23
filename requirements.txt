@@ -1,4 +1,5 @@
 gunicorn
+gevent
 flask
 git+https://github.com/datacamp/pythonwhat
 git+https://github.com/datacamp/sqlwhat@builds
