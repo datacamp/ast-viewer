@@ -1,6 +1,3 @@
 gunicorn
 gevent
 flask
-sqlwhat
---target=app/static/frontend/grammar antlr-plsql
---target=app/static/frontend/grammar antlr-tsql

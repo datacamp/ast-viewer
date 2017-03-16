@@ -1,1 +1,3 @@
+pip install --target app/static/frontend/grammar -r req-parsers.txt
+ls app/static/frontend/grammar/antlr_plsql/js
 make build_js
