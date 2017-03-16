@@ -1,12 +1,10 @@
 from flask import Flask
 from whitenoise import WhiteNoise
 
-app = Flask(__name__, static_folder='static/frontend', static_url_path='/static')
+app = Flask(__name__)
 app.config.from_object('config')
 
-app.wsgi_app = WhiteNoise(app.wsgi_app)
-app.wsgi_app.add_files('static/frontend')
-app.wsgi_app.add_files('static')
+app.wsgi_app = WhiteNoise(app.wsgi_app, root='app/static/', prefix='static/')
 
 # Helper funcs ----------------------------------------------------------------
 from antlr_plsql import ast as plsql_ast
