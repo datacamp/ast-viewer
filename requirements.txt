@@ -1,6 +1,6 @@
 gunicorn
 gevent
 flask
-git+https://github.com/datacamp/pythonwhat
-git+https://github.com/datacamp/sqlwhat@builds
-
+sqlwhat
+--target=app/static/frontend/grammar antlr-plsql
+--target=app/static/frontend/grammar antlr-tsql

@@ -2,8 +2,17 @@ var antlr = require('antlr4')
 var utils = require('./utils.js')
 console.log(utils)
 
-var Lexer = require('./grammar/plsqlLexer.js').plsqlLexer;
-var Parser = require('./grammar/plsqlParser.js').plsqlParser;
+var grammar = {
+    plsql: require('./grammar/antlr_plsql/js/index.js').default,
+    tsql: require('./grammar/antlr_tsql/js/index.js').default
+}
+//var Lexer = grammar.plsql.Lexer
+//var Parser = grammar.plsql.Parser
+var Lexer = grammar.tsql.Lexer
+var Parser = grammar.tsql.Parser
+console.log(grammar)
+//var Lexer = require('./grammar/plsqlLexer.js').plsqlLexer;
+//var Parser = require('./grammar/plsqlParser.js').plsqlParser;
 var CustomListener = require('./CustomListener.js');
 
 function getCode() {
@@ -16,6 +25,10 @@ function getParserStart() {
     return input.value
 }
 
+function getParserName() {
+    return document.querySelector(".input-parser-name").value;
+}
+
 // graph code request ---------------------------------------------------------
 var btn = document.querySelector(".btn-code-submit");
 btn.addEventListener("click", function(){
@@ -26,11 +39,12 @@ btn.addEventListener("click", function(){
 
 function graphCode(){
     var input = getCode();
+    var parser = getParserName()
     //var input = "(123 + 1) * 2\n"
     var chars = new antlr.InputStream(input);
-    var lexer = new Lexer(chars);
+    var lexer = new grammar[parser].Lexer(chars);
     var tokens  = new antlr.CommonTokenStream(lexer);
-    var parser = new Parser(tokens);
+    var parser = new grammar[parser].Parser(tokens);
     parser.buildParseTrees = true;
 
     // get the parser start point from input box!
@@ -78,7 +92,8 @@ function graphAst(){
     console.log('creating request');
     var code = encodeURIComponent(getCode());
     var start = encodeURIComponent(getParserStart());
-    var url = `/ast-postgres?code=${code}&start=${start}`
+    var parser = encodeURIComponent(getParserName());
+    var url = `/ast?code=${code}&start=${start}&parser=${parser}`
     xhr.open('GET', url, true);
     xhr.send();
 }

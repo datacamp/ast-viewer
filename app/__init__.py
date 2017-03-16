@@ -2,17 +2,31 @@ from flask import Flask
 app = Flask(__name__, static_folder='static/frontend', static_url_path='/static')
 app.config.from_object('config')
 
+# Helper funcs ----------------------------------------------------------------
+from antlr_plsql import ast as plsql_ast
+from antlr_tsql  import ast as tsql_ast
+
+def get_ast(code, start, parser_name):
+    if parser_name == "plsql":
+        return plsql_ast.parse(code, start)
+    elif parser_name == "tsql":
+        return tsql_ast.parse(code, start)
+    else: raise NameError("No parser by that name")
+
 # Views -----------------------------------------------------------------------
 from flask import Flask, request,  url_for, redirect, jsonify
-from sqlwhat.grammar.plsql import ast
 
 @app.route('/')
 def index():
     return redirect(url_for('static', filename='index.html'))
 
-@app.route('/ast-postgres')
+@app.route('/ast')
 def ast_postgres():
     args = request.args
     print(args)
-    return jsonify(ast.parse(args['code'], args['start'])._dump())
+    try:
+        return jsonify(get_ast(args['code'], args['start'], args['parser'])._dump())
+    except NameError:
+        return make_response("Incorrect parser name", 400)
+
 
