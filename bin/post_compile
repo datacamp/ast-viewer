@@ -1,2 +1,3 @@
 pip install --target app/static/grammar -r req-parsers.txt
 make build_js
+cd app/static && gzip < bundle.js > bundle.js.gz
