@@ -79,6 +79,12 @@ var style = [
         }
     },
     {
+        selector: 'node.unshaped',
+        style: {
+            'background-color': 'orange'
+        }
+    },
+    {
         selector: 'edge',
         style: {
             'curve-style': 'bezier',

@@ -36,6 +36,8 @@ function AstCytoBuilder() {
                     result = result.concat(key_node);
                 }
             }
+
+            if (ast.type == 'Unshaped') node.classes += " unshaped"
         }
         
         return result
