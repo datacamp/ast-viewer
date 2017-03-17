@@ -4,7 +4,7 @@ from whitenoise import WhiteNoise
 app = Flask(__name__)
 app.config.from_object('config')
 
-#app.wsgi_app = WhiteNoise(app.wsgi_app, root='app/static/', prefix='static/')
+app.wsgi_app = WhiteNoise(app.wsgi_app, root='app/static/', prefix='static/')
 
 # Helper funcs ----------------------------------------------------------------
 from antlr_plsql import ast as plsql_ast
