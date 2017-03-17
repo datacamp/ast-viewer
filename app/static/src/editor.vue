@@ -30,6 +30,7 @@
 
 var antlr = require('antlr4')
 var utils = require('./utils.js')
+var graphs = require('./graphs.js')
 
 var grammars = [
     { 
@@ -48,61 +49,6 @@ var CustomListener = require('./CustomListener.js');
 
 // Start cytoscape ----------------------------
 //
-var cytoscape = require('cytoscape');
-var cydagre = require('cytoscape-dagre');
-var dagre = require('dagre');
-
-cydagre( cytoscape, dagre ); // register extension
-
-var style = [
-    {
-        selector: 'node',
-        style: {
-            'content': 'data(name)',
-            'text-valign': 'center',
-        }
-    },
-    {
-        selector: 'node.terminal',
-        style: {
-            'content': 'data(text)',
-            'border-width': '0',
-            'background-color': 'white'
-        }
-    },
-    {
-        selector: 'node.error',
-        style: {
-            'content': 'data(text)',
-            'border-width': '0',
-            'background-color': 'red'
-        }
-    },
-    {
-        selector: 'node.unshaped',
-        style: {
-            'background-color': 'orange'
-        }
-    },
-    {
-        selector: 'edge',
-        style: {
-            'curve-style': 'bezier',
-            'target-arrow-shape': 'triangle',
-            'font-size': '.5em',
-            'label': 'data(text)'
-        }
-
-    },
-    {
-        selector: 'edge.collapsed',
-        style: {
-            'line-color': 'blue'
-        }
-    }
-
-];
-
 export default {
     data () {
         return {
@@ -113,17 +59,8 @@ export default {
         }
     },
     mounted () {
-        this.cy = cytoscape({
-            container: document.getElementById('cy-1'),
-            layout: {name: 'dagre', rankDir: 'LR'},
-            style: style
-        });
-
-        this.cy2 = cytoscape({
-            container: document.getElementById('cy-2'),
-            layout: {name: 'dagre', rankDir: 'LR'},
-            style: style
-        })
+        this.cy = graphs.init_cyto(document.getElementById('cy-1'))
+        this.cy2 = graphs.init_cyto(document.getElementById('cy-2'))
 
         var editor1 = this.editor = ace.edit('editor1')
         editor1.setTheme("ace/theme/tomorrow_night_eighties");
