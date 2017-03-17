@@ -26,14 +26,10 @@ function AstCytoBuilder() {
         // make edge to parent node
         if (parent_node) result.push(makeCytoEdge(parent_node.data.id, node.data.id, field));
 
-        //console.log(`is terminal: ${isTerminal(ast)}`)
-        console.log("NODE INCOMING")
-        console.log(ast)
-
         if (ast.type) {
-            //console.log('FIELDS')
+            console.log('FIELDS')
+            console.log(Object.keys(ast.data))
             for (const key of Object.keys(ast.data)) {
-                console.log(`KEY: ${key}`);
                 var d = ast.data[key]
                 if ( d != null) {
                     var key_node = this.astToCyto(ast.data[key], node, key);
@@ -60,13 +56,10 @@ function makeCytoNode(ast_node, id, terminal) {
 
     var classes = terminal ? 'terminal' : '' ;
 
-
-    console.log(`made node for ${data.type}, id ${data.id}`);
     return {data, classes}
 };
 
 function makeCytoEdge(source, target, text) {
-    console.log(`made edge for ${source} -> ${target}`);
     return {
         data: { source, target, text }
     }
