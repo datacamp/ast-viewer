@@ -141,6 +141,16 @@ var style = [
         }
     },
     {
+        selector: 'edge',
+        style: {
+            'curve-style': 'bezier',
+            'target-arrow-shape': 'triangle',
+            'font-size': '.5em',
+            'label': 'data(text)'
+        }
+
+    },
+    {
         selector: 'edge.collapsed',
         style: {
             'line-color': 'blue'
@@ -160,3 +170,4 @@ var cy2 = cytoscape({
     layout: {name: 'dagre', rankDir: 'LR'},
     style: style
 })
+

@@ -10,10 +10,10 @@ function AstCytoBuilder() {
     };
     return self
 
-    function astToCyto(ast, parent_node) {
+    function astToCyto(ast, parent_node, field) {
         // recurse for arrays -------------------------------------------------
         if (Array.isArray(ast)) {
-            result = [].concat.apply([], ast.map( (v) => this.astToCyto(v, parent_node)));
+            result = [].concat.apply([], ast.map( (v) => this.astToCyto(v, parent_node, field)));
             return result
         }
 
@@ -24,17 +24,19 @@ function AstCytoBuilder() {
         var result = [node]
         
         // make edge to parent node
-        if (parent_node) result.push(makeCytoEdge(parent_node.data.id, node.data.id));
+        if (parent_node) result.push(makeCytoEdge(parent_node.data.id, node.data.id, field));
 
-        console.log(`is terminal: ${isTerminal(ast)}`)
+        //console.log(`is terminal: ${isTerminal(ast)}`)
+        console.log("NODE INCOMING")
+        console.log(ast)
 
         if (ast.type) {
-            console.log('FIELDS')
+            //console.log('FIELDS')
             for (const key of Object.keys(ast.data)) {
                 console.log(`KEY: ${key}`);
                 var d = ast.data[key]
                 if ( d != null) {
-                    var key_node = this.astToCyto(ast.data[key], node);
+                    var key_node = this.astToCyto(ast.data[key], node, key);
                     result = result.concat(key_node);
                 }
             }
@@ -63,10 +65,10 @@ function makeCytoNode(ast_node, id, terminal) {
     return {data, classes}
 };
 
-function makeCytoEdge(source, target) {
+function makeCytoEdge(source, target, text) {
     console.log(`made edge for ${source} -> ${target}`);
     return {
-        data: { source, target }
+        data: { source, target, text }
     }
 };
 
