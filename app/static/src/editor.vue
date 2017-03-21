@@ -13,14 +13,14 @@
         </option>
     </select>
 
-    <button v-on:click="graphCodeAndAst">Submit Code</button>
+    <button v-on:click="parseCode">Submit Code</button>
 
     <!-- NODE GRAPH -->
 
     <div class="container">
     <code-graph graph-type="parser" :graph-data="codeData" :opt-collapse="optCollapse"></code-graph>
 
-    show fields: <input type="checkbox" v-model="optFields" v-on:change="graphAst"></br>
+    show fields: <input type="checkbox" v-model="optFields" v-on:change="getAst"></br>
     <code-graph graph-type="ast" :graph-data="astData" :opt-fields="optFields"></code-graph>
 
     </div>
@@ -32,6 +32,7 @@
 var antlr = require('antlr4')
 var utils = require('./utils.js')
 var graphs = require('./graphs.js')
+var request = require('superagent')
 
 var grammars = [
     { 
@@ -62,62 +63,53 @@ export default {
             optFields: true,
             codeData: {},
             astData: {}
-
         }
     },
     mounted () {
-
-        var editor1 = this.editor = ace.edit('editor1')
-        editor1.setTheme("ace/theme/tomorrow_night_eighties");
-        editor1.session.setMode("ace/mode/sql");
-        editor1.setAutoScrollEditorIntoView(true);
-        editor1.setOption("maxLines", 30);
-        editor1.setOption("minLines", 5);
+        // set up ace editor
+        this.editor = ace.edit('editor1')
+        this.setupEditor(this.editor)
 
         this.code = this.editor.getValue()
         this.editor.on('change', () => this.code = this.editor.getValue())
-        // graph ast request ----------------------------------------------------------
-        var self = this;
-        var xhr = this.xhr = new XMLHttpRequest();
-        xhr.responseType = 'json';
-
-        xhr.addEventListener("readystatechange", (e) => {
-            console.log('rsc');
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                var response = xhr.response;
-                console.log(response);
-                this.astData = response
-
-            }
-        }, false);
-
     },
     computed: {
         grammars () { return grammars },
-        crntGrammar () { return this.grammars.filter(({name}) => name == this.grammarName)[0]}
+        crntGrammar () { return this.grammars.filter(({name}) => name == this.grammarName)[0]},
+    },
+    watch: {
+        codeData () { this.getAst() }
     },
     methods: {
 
-        graphAst () {
+        getAst () {
             console.log('creating request');
             var code = encodeURIComponent(this.code);
             var start = encodeURIComponent(this.parserStart);
             var parser = encodeURIComponent(this.grammarName);
             var url = `/ast?code=${code}&start=${start}&parser=${parser}`
-            this.xhr.open('GET', url, true);
-            this.xhr.send();
+            request
+                .get(url)
+                .set('Accept', 'application/json')
+                .then((res) => {
+                    if (res.status == 200) this.astData = res.body
+
+                })
         },
 
-        graphCode () {
+        parseCode () {
             var grammar = this.crntGrammar.funcs
             this.codeData = parseFromGrammar(grammar, this.code, this.parserStart)
         },
         resetStartPoint () {
             this.parserStart = this.crntGrammar.start
         },
-        graphCodeAndAst () {
-            this.graphCode()
-            this.graphAst()
+        setupEditor(editor) {
+            editor.setTheme("ace/theme/tomorrow_night_eighties");
+            editor.session.setMode("ace/mode/sql");
+            editor.setAutoScrollEditorIntoView(true);
+            editor.setOption("maxLines", 30);
+            editor.setOption("minLines", 5);
         }
     }
 }
