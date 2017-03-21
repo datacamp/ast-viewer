@@ -18,10 +18,11 @@
     <!-- NODE GRAPH -->
 
     <div class="container">
-    <div id="cy-1"></div>
+    <code-graph graph-type="parser" :graph-data="codeData" :opt-collapse="optCollapse"></code-graph>
 
     show fields: <input type="checkbox" v-model="optFields" v-on:change="graphAst"></br>
-    <div id="cy-2"></div>
+    <code-graph graph-type="ast" :graph-data="astData" :opt-fields="optFields"></code-graph>
+
     </div>
   </div>
 </template>
@@ -45,22 +46,26 @@ var grammars = [
     }
 ]
 
-var CustomListener = require('./CustomListener.js');
+var {parseFromGrammar} = require('./CustomListener.js');
+
+import CodeGraph from './code-graph.vue'
 
 // Start cytoscape ----------------------------
 //
 export default {
+    components: {CodeGraph},
     data () {
         return {
             parserStart: 'sql_script',
             grammarName: 'plsql',
             optCollapse: true,
-            optFields: true
+            optFields: true,
+            codeData: {},
+            astData: {}
+
         }
     },
     mounted () {
-        this.cy = graphs.init_cyto(document.getElementById('cy-1'))
-        this.cy2 = graphs.init_cyto(document.getElementById('cy-2'))
 
         var editor1 = this.editor = ace.edit('editor1')
         editor1.setTheme("ace/theme/tomorrow_night_eighties");
@@ -76,18 +81,12 @@ export default {
         var xhr = this.xhr = new XMLHttpRequest();
         xhr.responseType = 'json';
 
-        xhr.addEventListener("readystatechange", function(e){
+        xhr.addEventListener("readystatechange", (e) => {
             console.log('rsc');
             if (xhr.readyState == 4 && xhr.status == 200) {
                 var response = xhr.response;
                 console.log(response);
-                var builder = utils.AstCytoBuilder();
-                var elements = builder.astToCyto(response)
-
-                self.cy2.elements().remove()
-                self.cy2.add(elements);
-                self.cy2.layout({name: 'dagre', rankDir: 'TB'});
-
+                this.astData = response
 
             }
         }, false);
@@ -96,13 +95,6 @@ export default {
     computed: {
         grammars () { return grammars },
         crntGrammar () { return this.grammars.filter(({name}) => name == this.grammarName)[0]}
-    },
-    watch: {
-        optFields (val) {
-            var label = val ? 'data(text)' : ''
-            this.cy2.style().selector('edge').style('label', label).update()
-
-        }
     },
     methods: {
 
@@ -118,40 +110,14 @@ export default {
 
         graphCode () {
             var grammar = this.crntGrammar.funcs
-            var chars = new antlr.InputStream(this.code);
-            var lexer = new grammar.Lexer(chars);
-            var tokens  = new antlr.CommonTokenStream(lexer);
-            var parser = new grammar.Parser(tokens);
-            parser.buildParseTrees = true;
-
-            // get the parser start point from input box!
-            var tree = parser[this.parserStart]();
-            var listener = new CustomListener.Listener();
-            antlr.tree.ParseTreeWalker.DEFAULT.walk(listener, tree);
-
-            // get nodes and edges from listener
-            var elements =  {
-                nodes: Object.keys(listener.nodeMap).map(key => listener.nodeMap[key]),
-                edges: listener.nodeEdges
-            };
-
-            // reset cytoscape graph
-            this.cy.elements().remove();
-            this.cy.add(elements);
-
-            if (!this.optCollapse) this.cy.edges('.collapsed').remove();
-            else this.cy.nodes('[?trivial]').remove();
-
-            this.cy.layout({name: 'dagre', rankDir: 'TB'});
+            this.codeData = parseFromGrammar(grammar, this.code, this.parserStart)
         },
-
-        graphCodeAndAst () {
-            this.graphCode();
-            this.graphAst();
-        },
-
         resetStartPoint () {
             this.parserStart = this.crntGrammar.start
+        },
+        graphCodeAndAst () {
+            this.graphCode()
+            this.graphAst()
         }
     }
 }
@@ -171,16 +137,5 @@ export default {
     text-align: center;
 }
 
-#cy-1 {
-    border: 1px solid black;
-    width: 800px;
-    height: 400px;
-}
-
-#cy-2 {
-    border: 1px solid black;
-    width: 800px;
-    height: 400px;
-}
 </style>
 

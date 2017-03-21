@@ -1,8 +1,8 @@
-var antlr4 = require('antlr4/index');
+var antlr = require('antlr4/index');
 
 // This class defines a complete listener for a parse tree produced by ExprParser.
 function Listener() {
-	antlr4.tree.ParseTreeListener.call(this);
+	antlr.tree.ParseTreeListener.call(this);
     this.nodeMap = {};
     this.nodeEdges = [];
     this.trivialRoot = null;
@@ -11,7 +11,7 @@ function Listener() {
 	return this;
 }
 
-Listener.prototype = Object.create(antlr4.tree.ParseTreeListener.prototype);
+Listener.prototype = Object.create(antlr.tree.ParseTreeListener.prototype);
 Listener.prototype.constructor = Listener;
 
 Listener.prototype.enterEveryRule = function(ctx) {
@@ -58,7 +58,7 @@ function makeCytoNode(ctx){
     var data = {
         id: this.crnt_id,
         text: ctx.getText(),
-        // Note, this is because antlr4 adds Context to end of each
+        // Note, this is because antlr adds Context to end of each
         // name by default. This approach could break if Context is part of
         // nodes actual name
         name: ctx.constructor.name.replace("Context", ""),
@@ -106,4 +106,24 @@ function isTrivial(ctx){
 // visitErrorNode
 // visitTerminal
 //
-exports.Listener = Listener;
+//
+// ---------------
+function parseFromGrammar(grammar, data, start) {
+    var chars = new antlr.InputStream(data);
+    var lexer = new grammar.Lexer(chars);
+    var tokens  = new antlr.CommonTokenStream(lexer);
+    var parser = new grammar.Parser(tokens);
+    parser.buildParseTrees = true;
+
+    var tree = parser[start]();
+    var listener = new Listener();
+    antlr.tree.ParseTreeWalker.DEFAULT.walk(listener, tree);
+
+    var elements =  {
+        nodes: Object.keys(listener.nodeMap).map(key => listener.nodeMap[key]),
+        edges: listener.nodeEdges
+    };
+    return elements
+}
+
+module.exports = {Listener, parseFromGrammar};
