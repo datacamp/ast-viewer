@@ -7,7 +7,12 @@
 <body>
 
   <div id="app">
-    <code-editor></code-editor>
+    <p>
+      <router-link to='/gallery'>Gallery</router-link>
+      <router-link to='/editor' >Editor</router-link>
+    </p>
+    <br>
+    <router-view></router-view>
   </div>
 
 <script src="node_modules/ace-builds/src/ace.js"></script>

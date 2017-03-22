@@ -27,8 +27,6 @@ function AstCytoBuilder() {
         if (parent_node) result.push(makeCytoEdge(parent_node.data.id, node.data.id, field));
 
         if (ast.type) {
-            console.log('FIELDS')
-            console.log(Object.keys(ast.data))
             for (const key of Object.keys(ast.data)) {
                 var d = ast.data[key]
                 if ( d != null) {

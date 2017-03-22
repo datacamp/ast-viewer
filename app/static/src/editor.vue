@@ -1,6 +1,6 @@
 <template>
   <div>
-    <pre id="editor1">SELECT id, artists.name as name2 FROM artists WHERE id < 500 AND id > 200</pre>
+    <pre id="editor1"></pre>
     <div class="scrollmargin"></div>
 
     collapse: <input type="checkbox" v-model="optCollapse"><br>
@@ -14,6 +14,7 @@
     </select>
 
     <button v-on:click="parseCode">Submit Code</button>
+    <button v-on:click="routeToCode">Save</button>
 
     <!-- NODE GRAPH -->
 
@@ -55,6 +56,7 @@ import CodeGraph from './code-graph.vue'
 //
 export default {
     components: {CodeGraph},
+    props: ['defaultCode', 'defaultGrammar', 'defaultStart'],
     data () {
         return {
             parserStart: 'sql_script',
@@ -70,20 +72,43 @@ export default {
         this.editor = ace.edit('editor1')
         this.setupEditor(this.editor)
 
-        this.code = this.editor.getValue()
+
+        this.code = this.defaultCode ? this.defaultCode : "SELECT id FROM artists WHERE id > 100"
+        this.parserStart = this.defaultStart ? this.defaultStart : 'sql_script'
+        this.grammarName = this.defaultGrammar ? this.defaultGrammar : 'plsql'
+
+        this.editor.setValue(this.code)
+
         this.editor.on('change', () => this.code = this.editor.getValue())
+
+        this.parseCode()
+
     },
     computed: {
         grammars () { return grammars },
         crntGrammar () { return this.grammars.filter(({name}) => name == this.grammarName)[0]},
     },
     watch: {
-        codeData () { this.getAst() }
+        codeData () { 
+            this.getAst() 
+        },
+        defaultCode () {
+            // TODO: this should be a method, or just use prop, not prop + this.code
+            this.code = this.defaultCode ? this.defaultCode : "SELECT id FROM artists WHERE id > 100"
+            this.editor.setValue(this.code)
+            setTimeout(() => this.parseCode())
+        },
+        defaultGrammar () {
+            this.grammarName = this.defaultGrammar ? this.defaultGrammar : 'plsql'
+        },
+        defaultStart () {
+            if (!this.defaultStart) this.resetStartPoint()
+            else this.parserStart = this.defaultStart
+        }
     },
     methods: {
 
         getAst () {
-            console.log('creating request');
             var code = encodeURIComponent(this.code);
             var start = encodeURIComponent(this.parserStart);
             var parser = encodeURIComponent(this.grammarName);
@@ -101,8 +126,16 @@ export default {
             var grammar = this.crntGrammar.funcs
             this.codeData = parseFromGrammar(grammar, this.code, this.parserStart)
         },
+        routeToCode () {
+            var code = this.code;
+            var start = this.parserStart;
+            var parser = this.grammarName;
+
+            var query = {code, start, grammar: parser}
+            this.$router.push({path: 'editor', query})
+        },
         resetStartPoint () {
-            this.parserStart = this.crntGrammar.start
+            if (!this.defaultStart) this.parserStart = this.crntGrammar.start
         },
         setupEditor(editor) {
             editor.setTheme("ace/theme/tomorrow_night_eighties");
@@ -117,7 +150,7 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
 .ace_editor {
     border: 1px solid lightgray;
     margin: auto;
@@ -129,5 +162,10 @@ export default {
     text-align: center;
 }
 
+.cy-container {
+    border: 1px solid black;
+    width: 800px;
+    height: 400px;
+}
 </style>
 

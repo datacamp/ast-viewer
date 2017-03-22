@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="cy"></div>
+  <div class="cy-container">
+      <div class="cy"></div>
   </div>
 </template>
 
@@ -8,14 +8,15 @@
 var antlr = require('antlr4')
 var utils = require('./utils.js')
 var graphs = require('./graphs.js')
+var _ = require('lodash')
 
 // Start cytoscape ----------------------------
 //
 export default {
     props: ['graphType', 'graphData', 'optFields', 'optCollapse'],
     mounted () {
-        console.log("YOU MOUNTED OR NOT")
         this.cy = graphs.init_cyto(this.$el.querySelector(".cy"))
+        if (!_.isEmpty(this.graphData)) this.runPlot()
     },
     watch: {
         optFields (val) {
@@ -24,8 +25,7 @@ export default {
 
         },
         graphData () { 
-            console.log('logging')
-            this.graphType == 'ast' ? this.graphAst(this.graphData) : this.graphCode(this.graphData) 
+            this.runPlot()
         }
 
     },
@@ -49,17 +49,20 @@ export default {
             else this.cy.nodes('[?trivial]').remove();
 
             this.cy.layout({name: 'dagre', rankDir: 'TB'});
+        },
+        runPlot () {
+            this.graphType == 'ast' ? this.graphAst(this.graphData) : this.graphCode(this.graphData) 
         }
     }
 }
 
 </script>
 
-<style>
+<style scoped>
 
 .cy {
-    border: 1px solid black;
-    width: 800px;
-    height: 400px;
+    width: 100%;
+    height: 100%;
 }
+
 </style>

@@ -10,15 +10,22 @@ app.wsgi_app = WhiteNoise(app.wsgi_app, root='app/static/', prefix='static/')
 from antlr_plsql import ast as plsql_ast
 from antlr_tsql  import ast as tsql_ast
 
+def get_parser(parser_name):
+    parsers = {'plsql': plsql_ast, 'tsql': tsql_ast}
+
+    return parsers.get(parser_name)
+
 def get_ast(code, start, parser_name):
     if parser_name == "plsql":
         return plsql_ast.parse(code, start)
     elif parser_name == "tsql":
         return tsql_ast.parse(code, start)
-    else: raise NameError("No parser by that name")
+
+    return None
 
 # Views -----------------------------------------------------------------------
-from flask import Flask, request,  url_for, redirect, jsonify
+from flask import Flask, request,  url_for, redirect, jsonify, make_response
+import yaml
 
 @app.route('/')
 def index():
@@ -28,9 +35,33 @@ def index():
 def ast_postgres():
     args = request.args
     print(args)
-    try:
-        return jsonify(get_ast(args['code'], args['start'], args['parser'])._dump())
-    except NameError:
-        return make_response("Incorrect parser name", 400)
+
+    ast = get_ast(args['code'], args['start'], args['parser'])
+    if ast is None: return make_response("Incorrect parser name", 400)
+
+    return jsonify(ast._dump())
+
+@app.route('/ast-from-config', methods = ['GET', 'POST'])
+def ast_from_config():
+    files = request.files
+    print(files['file'])
+    data = yaml.load(files['file'])
+    print(data)
+    ast_parser = get_parser(data['parser_name'])
+    
+    code = data['code']
+    trees = ast_parser.parse_from_yaml(code)
+
+    out = {}
+    for k, v in trees.items(): 
+        json_asts = [tree._dump() for tree in v]
+        sql_cmds = code[k]
+        zipped = zip(sql_cmds, json_asts)
+        # entry with attrs code: sql_cmd, ast: json_ast
+        out[k] = [{'code': code, 'ast': json_ast} for code, json_ast in zipped]
+        print(out)
+    return jsonify(out)
+
+
 
 

@@ -15,8 +15,6 @@ Listener.prototype = Object.create(antlr.tree.ParseTreeListener.prototype);
 Listener.prototype.constructor = Listener;
 
 Listener.prototype.enterEveryRule = function(ctx) {
-    //console.log(`entering node ${ctx.constructor.name}`);
-    console.log(ctx);
     this.crnt_id++;
     ctx.cytoId = this.crnt_id;
     this.nodeMap[this.crnt_id] = this.makeCytoNode(ctx);
@@ -46,7 +44,6 @@ Listener.prototype.exitEveryRule = function(ctx) {
         });
     });
 
-    //console.log('exiting node');
 };
 
 Listener.prototype.visitTerminal = Listener.prototype.enterEveryRule;

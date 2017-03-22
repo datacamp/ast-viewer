@@ -13,7 +13,9 @@
     "superagent": "^3.5.1",
     "vue": "^2.2.4",
     "vue-loader": "^11.1.4",
+    "vue-router": "^2.3.0",
     "vue-template-compiler": "^2.2.4",
+    "vue2-dropzone": "^2.2.4",
     "webpack": "^2.2.1"
   },
   "devDependencies": {
