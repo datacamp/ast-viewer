@@ -33,6 +33,8 @@ Listener.prototype.enterEveryRule = function(ctx) {
 };
 
 Listener.prototype.exitEveryRule = function(ctx) {
+    if (!ctx.children) return 
+
     var edges = this.nodeEdges;
     ctx.children.forEach(function(v){
         edges.push({
