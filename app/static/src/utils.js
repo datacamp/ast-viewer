@@ -10,10 +10,10 @@ function AstCytoBuilder() {
     };
     return self
 
-    function astToCyto(ast, parent_node, field) {
+    function astToCyto(ast, parent_node, field, arr_indx) {
         // recurse for arrays -------------------------------------------------
         if (Array.isArray(ast)) {
-            result = [].concat.apply([], ast.map( (v) => this.astToCyto(v, parent_node, field)));
+            result = [].concat.apply([], ast.map( (v, ii) => this.astToCyto(v, parent_node, field, ii)));
             return result
         }
 
@@ -24,7 +24,7 @@ function AstCytoBuilder() {
         var result = [node]
         
         // make edge to parent node
-        if (parent_node) result.push(makeCytoEdge(parent_node.data.id, node.data.id, field));
+        if (parent_node) result.push(makeCytoEdge(parent_node.data.id, node.data.id, field, arr_indx));
 
         if (ast.type) {
             for (const key of Object.keys(ast.data)) {
@@ -59,7 +59,9 @@ function makeCytoNode(ast_node, id, terminal) {
     return {data, classes}
 };
 
-function makeCytoEdge(source, target, text) {
+function makeCytoEdge(source, target, text, arr_indx) {
+    if (arr_indx != null) var text = `${text} [${arr_indx}]`
+
     return {
         data: { source, target, text }
     }

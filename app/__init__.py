@@ -27,6 +27,10 @@ def get_ast(code, start, parser_name):
 from flask import Flask, request,  url_for, redirect, jsonify, make_response
 import yaml
 
+def str_or_dump(ast):
+    if isinstance(ast, str): return {'type': 'PYTHON_OBJECT', 'data': {"": ast}}
+    else: return ast._dump()
+
 @app.route('/')
 def index():
     return redirect(url_for('static', filename='index.html'))
@@ -39,7 +43,7 @@ def ast_postgres():
     ast = get_ast(args['code'], args['start'], args['parser'])
     if ast is None: return make_response("Incorrect parser name", 400)
 
-    return jsonify(ast._dump())
+    return jsonify(str_or_dump(ast))
 
 @app.route('/ast-from-config', methods = ['GET', 'POST'])
 def ast_from_config():
@@ -54,7 +58,7 @@ def ast_from_config():
 
     out = {}
     for k, v in trees.items(): 
-        json_asts = [tree._dump() for tree in v]
+        json_asts = [str_or_dump(tree) for tree in v]
         sql_cmds = code[k]
         zipped = zip(sql_cmds, json_asts)
         # entry with attrs code: sql_cmd, ast: json_ast
