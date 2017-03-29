@@ -16,6 +16,10 @@ export default {
     props: ['graphType', 'graphData', 'optFields', 'optCollapse'],
     mounted () {
         this.cy = graphs.init_cyto(this.$el.querySelector(".cy"))
+
+        this.cy.on('select', ({cyTarget}) => graphs.markPath(this.cy, cyTarget))
+        this.cy.on('vclick', () => this.cy.elements().removeClass('mark'))
+        console.log(this.cy)
         if (!_.isEmpty(this.graphData)) this.runPlot()
     },
     watch: {
