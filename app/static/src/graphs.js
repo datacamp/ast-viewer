@@ -12,6 +12,23 @@ function init_cyto(el) {
     })
 }
 
+function pathToNode(cy, el) {
+    var root = cy.$('node').roots()
+
+    var out = cy.elements()
+                .aStar({root, goal: el, directed: true})
+    
+    return out
+}
+
+function markPath(cy, el) {
+    cy.elements().removeClass('mark')
+    var {path} = pathToNode(cy, el)
+    if (path) path.addClass('mark')
+
+    return path
+}
+
 var style = [
     {
         selector: 'node',
@@ -57,11 +74,22 @@ var style = [
         style: {
             'line-color': 'blue'
         }
+    },
+    {
+        selector: '.mark',
+        style: {
+            'line-color': 'orange',
+            'font-size': '1.25em',
+            'color': 'blue',
+            'background-color': 'orange'
+        }
     }
 
 ];
 
 module.exports = {
     init_cyto,
-    style
+    style,
+    pathToNode,
+    markPath
 }
