@@ -45,6 +45,10 @@ var grammars = [
         name: 'tsql',
         funcs: require('../grammar/antlr_tsql/js/index.js').default,
         start: 'tsql_file'
+    },
+    {
+        name: 'python',
+        start: 'NA'
     }
 ]
 
@@ -124,7 +128,10 @@ export default {
 
         parseCode () {
             var grammar = this.crntGrammar.funcs
-            this.codeData = parseFromGrammar(grammar, this.code, this.parserStart)
+            if (this.crntGrammar.name != "python")
+                this.codeData = parseFromGrammar(grammar, this.code, this.parserStart)
+            else
+                this.codeData = {}
         },
         routeToCode () {
             var code = this.code;

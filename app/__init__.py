@@ -4,11 +4,13 @@ from whitenoise import WhiteNoise
 app = Flask(__name__)
 app.config.from_object('config')
 
-app.wsgi_app = WhiteNoise(app.wsgi_app, root='app/static/', prefix='static/')
+#app.wsgi_app = WhiteNoise(app.wsgi_app, root='app/static/', prefix='static/')
 
 # Helper funcs ----------------------------------------------------------------
 from antlr_plsql import ast as plsql_ast
 from antlr_tsql  import ast as tsql_ast
+import ast as python_ast
+from .ast_dump import dump_node
 
 def get_parser(parser_name):
     parsers = {'plsql': plsql_ast, 'tsql': tsql_ast}
@@ -20,6 +22,8 @@ def get_ast(code, start, parser_name):
         return plsql_ast.parse(code, start)
     elif parser_name == "tsql":
         return tsql_ast.parse(code, start)
+    elif parser_name == "python":
+        return python_ast.parse(code)
 
     return None
 
@@ -29,7 +33,7 @@ import yaml
 
 def str_or_dump(ast):
     if isinstance(ast, str): return {'type': 'PYTHON_OBJECT', 'data': {"": ast}}
-    else: return ast._dump()
+    else: return dump_node(ast)
 
 @app.route('/')
 def index():
