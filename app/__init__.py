@@ -33,6 +33,7 @@ import yaml
 
 def str_or_dump(ast):
     if isinstance(ast, str): return {'type': 'PYTHON_OBJECT', 'data': {"": ast}}
+    elif hasattr(ast, '_dump'): return ast._dump()
     else: return dump_node(ast)
 
 @app.route('/')
