@@ -1,0 +1,23 @@
+{
+  "name": "sqlwhat-viewer",
+  "scripts": {
+  },
+  "env": {
+  },
+  "formation": {
+  },
+  "addons": [
+
+  ],
+  "buildpacks": [
+    {
+      "url": "http://github.com/virtualstaticvoid/heroku-buildpack-r.git#heroku-16"
+    },
+    {
+      "url": "heroku/nodejs"
+    },
+    {
+      "url": "heroku/python"
+    }
+  ]
+}
