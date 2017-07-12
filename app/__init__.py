@@ -12,6 +12,11 @@ from antlr_tsql  import ast as tsql_ast
 import ast as python_ast
 from .ast_dump import dump_node
 
+import json
+import rpy2.robjects as robjects
+
+robjects.r.source('~/repo/r-ast/build_r_ast.R')
+
 def get_parser(parser_name):
     parsers = {'plsql': plsql_ast, 'tsql': tsql_ast}
 
@@ -24,6 +29,8 @@ def get_ast(code, start, parser_name):
         return tsql_ast.parse(code, start)
     elif parser_name == "python":
         return python_ast.parse(code)
+    elif parser_name == 'r':
+        return json.loads(str(robjects.r.code_to_json(code)))
 
     return None
 
@@ -33,6 +40,7 @@ import yaml
 
 def str_or_dump(ast):
     if isinstance(ast, str): return {'type': 'PYTHON_OBJECT', 'data': {"": ast}}
+    if isinstance(ast, dict): return ast
     elif hasattr(ast, '_dump'): return ast._dump()
     else: return dump_node(ast)
 
