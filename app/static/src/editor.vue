@@ -49,6 +49,10 @@ var grammars = [
     {
         name: 'python',
         start: 'NA'
+    },
+    {
+        name: 'r',
+        start: 'NA'
     }
 ]
 
@@ -128,7 +132,7 @@ export default {
 
         parseCode () {
             var grammar = this.crntGrammar.funcs
-            if (this.crntGrammar.name != "python")
+            if (this.crntGrammar.name != "python" && this.crntGrammar.name != 'r')
                 this.codeData = parseFromGrammar(grammar, this.code, this.parserStart)
             else
                 this.codeData = {}
