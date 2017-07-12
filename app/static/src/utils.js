@@ -26,7 +26,7 @@ function AstCytoBuilder() {
         // make edge to parent node
         if (parent_node) result.push(makeCytoEdge(parent_node.data.id, node.data.id, field, arr_indx));
 
-        if (ast.type) {
+        if (!isTerminal(ast)) {
             for (const key of Object.keys(ast.data)) {
                 var d = ast.data[key]
                 if ( d != null) {
@@ -43,14 +43,15 @@ function AstCytoBuilder() {
 }
 
 function isTerminal(ast_node) {
-    return ast_node === null || !(ast_node.type || Array.isArray(ast_node))
+    return ast_node === null || !(typeof ast_node.data == 'object' || Array.isArray(ast_node))
 }
 
 function makeCytoNode(ast_node, id, terminal) {
+    var text = ast_node.data || ast_node
     var data = {
         id,
-        text: terminal ? ast_node   : ast_node.type,
-        name: terminal ? ast_node   : ast_node.type,
+        text: terminal ? text   : ast_node.type,
+        name: terminal ? text   : ast_node.type,
         type: terminal ? 'terminal' : ast_node.type
     };
 
