@@ -1,5 +1,6 @@
 {
   "name": "sqlwhat-viewer",
+  "stack": "heroku-16",
   "scripts": {
   },
   "env": {
