@@ -12,7 +12,7 @@
   ],
   "buildpacks": [
     {
-      "url": "http://github.com/virtualstaticvoid/heroku-buildpack-r.git#heroku-16"
+      "url": "http://github.com/virtualstaticvoid/heroku-buildpack-r.git"
     },
     {
       "url": "heroku/nodejs"
