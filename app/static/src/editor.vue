@@ -38,16 +38,29 @@ var request = require('superagent')
 var grammars = [
     { 
         name: 'plsql', 
+        show_parse: true,
         funcs: require('../grammar/antlr_plsql/js/index.js').default,
         start: 'sql_script'
     },
     {
         name: 'tsql',
+        show_parse: true,
         funcs: require('../grammar/antlr_tsql/js/index.js').default,
         start: 'tsql_file'
     },
     {
         name: 'python',
+        show_parse: false,
+        start: 'NA'
+    },
+    {
+        name: 'bash-simple',
+        show_parse: false,
+        start: 'NA'
+    },
+    {
+        name: 'bash-verbose',
+        show_parse: false,
         start: 'NA'
     }
 ]
@@ -128,7 +141,7 @@ export default {
 
         parseCode () {
             var grammar = this.crntGrammar.funcs
-            if (this.crntGrammar.name != "python")
+            if (this.crntGrammar.show_parse)
                 this.codeData = parseFromGrammar(grammar, this.code, this.parserStart)
             else
                 this.codeData = {}
