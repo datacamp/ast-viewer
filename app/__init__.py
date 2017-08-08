@@ -15,7 +15,7 @@ from shellwhat.parsers import DEFAULT_PARSER as shell_ast
 import ast as python_ast
 from antlr_ast.ast import parse as parse_ast, process_tree
 from .CytoListener import parse_from_grammar
-from .ast_dump import dump_node, dump_bash
+from .ast_dump import dump_node, dump_bash, dump_vorpal_bash, get_vorpal_bash_ast
 import bashlex
 
 grammars = {
@@ -30,6 +30,7 @@ ast_parsers = {
     'shell': shell_ast,
     'bash-simple': bashlex,
     'bash-verbose': bashlex,
+    'bash-vorpal': get_vorpal_bash_ast,
 }
 
 
@@ -63,6 +64,8 @@ def get_ast(parser_name, code, start):
     parser = ast_parsers.get(parser_name)
     if 'sql' in parser_name:
         return parser.parse(code, start)
+    if parser_name == "bash-vorpal":
+        return get_vorpal_bash_ast(code)
     else:
         try:
             return parser.parse(code)
@@ -79,6 +82,7 @@ import yaml
 def str_or_dump(ast, parser):
     if parser == 'bash-simple': return dump_bash(ast)
     elif parser == 'bash-verbose': return dump_bash(ast, v=True)
+    elif parser == 'bash-vorpal': return dump_vorpal_bash(ast)
     elif isinstance(ast, str): return {'type': 'PYTHON_OBJECT', 'data': {"": ast}}
     else: return dump_node(ast)
 

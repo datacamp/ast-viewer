@@ -76,6 +76,11 @@ var grammars = [
         show_parse: false,
         start: 'NA'
     },
+    {
+        name: 'bash-vorpal',
+        show_parse: false,
+        start: 'NA'
+    },
 ]
 
 import CodeGraph from './code-graph.vue'

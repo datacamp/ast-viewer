@@ -12,6 +12,9 @@ RUN apt-get install -y python python-dev python-pip \
 
 ENV SHELLWHAT_PARSER='osh'
 
+COPY ./package.json ./package.json
+RUN npm install
+
 WORKDIR /app
 
 # Build node modules

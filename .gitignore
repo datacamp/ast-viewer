@@ -105,3 +105,5 @@ ENV/
 
 # custom stuff
 app/static/grammar/*
+
+node_modules/
