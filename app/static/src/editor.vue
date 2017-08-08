@@ -62,6 +62,11 @@ var grammars = [
         name: 'bash-verbose',
         show_parse: false,
         start: 'NA'
+    },
+    {
+        name: 'bash-vorpal',
+        show_parse: false,
+        start: 'NA'
     }
 ]
 

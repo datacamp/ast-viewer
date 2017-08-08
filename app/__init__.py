@@ -10,7 +10,7 @@ app.wsgi_app = WhiteNoise(app.wsgi_app, root='app/static/', prefix='static/')
 from antlr_plsql import ast as plsql_ast
 from antlr_tsql  import ast as tsql_ast
 import ast as python_ast
-from .ast_dump import dump_node, dump_bash
+from .ast_dump import dump_node, dump_bash, dump_vorpal_bash, get_vorpal_bash_ast
 import bashlex
 
 def get_parser(parser_name):
@@ -29,6 +29,8 @@ def get_ast(code, start, parser_name):
         return bashlex.parse(code)
     elif parser_name == "bash-verbose":
         return bashlex.parse(code)
+    elif parser_name == "bash-vorpal":
+        return get_vorpal_bash_ast(code)
 
     return None
 
@@ -39,6 +41,7 @@ import yaml
 def str_or_dump(ast, parser):
     if parser == 'bash-simple': return dump_bash(ast)
     elif parser == 'bash-verbose': return dump_bash(ast, v = True)
+    elif parser == 'bash-vorpal': return dump_vorpal_bash(ast)
     elif isinstance(ast, str): return {'type': 'PYTHON_OBJECT', 'data': {"": ast}}
     elif hasattr(ast, '_dump'): return ast._dump()
     else: return dump_node(ast)
