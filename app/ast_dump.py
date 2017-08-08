@@ -62,5 +62,5 @@ node_path = os.getcwd() + '/node_modules'
 os.environ['NODE_PATH'] = node_path + ':' + os.environ.get('NODE_PATH', "")
 def get_vorpal_bash_ast(src):
     node = execjs.get('node')
-    return node.eval("""require('bash-parser')("%s")"""%src.replace('"', r'\"'))
+    return node.eval("""require('bash-parser')(`%s`)"""%src.replace('"', r'\"'))
 
