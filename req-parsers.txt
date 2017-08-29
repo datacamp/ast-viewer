@@ -1,3 +1,4 @@
 sqlwhat
+shellwhat
 antlr-plsql
 antlr-tsql

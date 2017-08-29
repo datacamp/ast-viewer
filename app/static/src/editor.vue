@@ -39,16 +39,24 @@ var grammars = [
     { 
         name: 'plsql', 
         funcs: require('../grammar/antlr_plsql/js/index.js').default,
-        start: 'sql_script'
+        start: 'sql_script',
+        show_parse: true
     },
     {
         name: 'tsql',
         funcs: require('../grammar/antlr_tsql/js/index.js').default,
-        start: 'tsql_file'
+        start: 'tsql_file',
+        show_parse: true
     },
     {
         name: 'python',
-        start: 'NA'
+        start: 'NA',
+        show_parse: false
+    },
+    {
+        name: 'shell',
+        start: 'NA',
+        show_parse: false
     }
 ]
 
@@ -128,7 +136,7 @@ export default {
 
         parseCode () {
             var grammar = this.crntGrammar.funcs
-            if (this.crntGrammar.name != "python")
+            if (this.crntGrammar.show_parse)
                 this.codeData = parseFromGrammar(grammar, this.code, this.parserStart)
             else
                 this.codeData = {}

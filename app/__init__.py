@@ -9,11 +9,14 @@ app.wsgi_app = WhiteNoise(app.wsgi_app, root='app/static/', prefix='static/')
 # Helper funcs ----------------------------------------------------------------
 from antlr_plsql import ast as plsql_ast
 from antlr_tsql  import ast as tsql_ast
+from shellwhat.State import State
+shell_ast = State.get_dispatcher().ast
+
 import ast as python_ast
 from .ast_dump import dump_node
 
 def get_parser(parser_name):
-    parsers = {'plsql': plsql_ast, 'tsql': tsql_ast}
+    parsers = {'plsql': plsql_ast, 'tsql': tsql_ast, 'shell': shell_ast}
 
     return parsers.get(parser_name)
 
@@ -24,6 +27,8 @@ def get_ast(code, start, parser_name):
         return tsql_ast.parse(code, start)
     elif parser_name == "python":
         return python_ast.parse(code)
+    elif parser_name == "shell":
+        return shell_ast.parse(code)
 
     return None
 
@@ -34,6 +39,7 @@ import yaml
 def str_or_dump(ast):
     if isinstance(ast, str): return {'type': 'PYTHON_OBJECT', 'data': {"": ast}}
     elif hasattr(ast, '_dump'): return ast._dump()
+    elif isinstance(ast, str): return {'type': 'PYTHON_OBJECT', 'data': {"": ast}}
     else: return dump_node(ast)
 
 @app.route('/')
