@@ -11,14 +11,16 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY . .
 
+COPY req-parsers.txt .
 RUN pip3 install --target app/static/grammar -r req-parsers.txt
 
-# Build frontend
-RUN make build_js
+# Build node modules
+COPY ./app/static/package.json ./app/static/package.json
+RUN (cd app/static && npm install)
 
 # Build requirements for server
+COPY requirements.txt .
 RUN pip3 install -r requirements.txt -r req-parsers.txt
 
 # install osh AST generator
@@ -27,6 +29,11 @@ RUN pip3 install -r requirements.txt -r req-parsers.txt
 RUN mkdir -p /usr/bin/python2_7 && ln /usr/bin/python2.7 /usr/bin/python2_7/python \
     && git clone -b dev-comms https://github.com/datacamp/oil.git \
     && PATH="/usr/bin/python2_7:$PATH" pip2 install -e ./oil
+
+# Build frontend
+COPY config.py test.py Makefile ./
+COPY app ./app
+RUN ls * && make build_js
 
 EXPOSE 8000
 
