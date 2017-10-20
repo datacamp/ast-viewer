@@ -3,3 +3,5 @@ gevent
 flask
 whitenoise
 pyyaml
+bashlex
+PyExecJS
