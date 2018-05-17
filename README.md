@@ -1,6 +1,6 @@
 # ast-viewer
 
-[![CircleCI](https://circleci.com/gh/datacamp/ast-viewer.svg?style=svg&circle-token=79a78a39ce7228326c9fa458833aee242eb0322a)]
+[![CircleCI](https://circleci.com/gh/datacamp/ast-viewer.svg?style=svg&circle-token=79a78a39ce7228326c9fa458833aee242eb0322a)](https://circleci.com/gh/datacamp/ast-viewer)
 
 Hosted at https://ast-viewer.new.datacamp.com, the ast viewer allows users to quickly parse Python, SQL (Postgres + Transact) and Shell code and inspect the resulting parse trees and abstract syntax trees. This makes development of parsing grammars ([example]) easier, but can also help when writing SCTs to figure out which ASTs are being generated for different submissions.
 
