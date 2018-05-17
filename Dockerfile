@@ -25,7 +25,6 @@ RUN pip3 install -r requirements.txt -r req-parsers.txt
 
 # install osh AST generator
 # Note, we make sure python -> python2.7, so the oil build scripts won't use python3
-#
 RUN mkdir -p /usr/bin/python2_7 && ln /usr/bin/python2.7 /usr/bin/python2_7/python \
     && git clone -b dev-comms https://github.com/datacamp/oil.git \
     && PATH="/usr/bin/python2_7:$PATH" pip2 install -e ./oil
@@ -37,7 +36,7 @@ RUN ls * && make build_js
 
 EXPOSE 3000
 
-RUN useradd --create-home -s /bin/bash user
+RUN useradd -m -s /bin/bash user
 USER user
 
-CMD ["python3", "run.py"]
+CMD ["/bin/bash", "-c", "gunicorn -w 4 -b 0.0.0.0:3000 -k gevent app:app"]
