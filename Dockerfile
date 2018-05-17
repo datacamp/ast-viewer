@@ -31,10 +31,13 @@ RUN mkdir -p /usr/bin/python2_7 && ln /usr/bin/python2.7 /usr/bin/python2_7/pyth
     && PATH="/usr/bin/python2_7:$PATH" pip2 install -e ./oil
 
 # Build frontend
-COPY config.py test.py Makefile ./
+COPY config.py run.py Makefile ./
 COPY app ./app
 RUN ls * && make build_js
 
-EXPOSE 8000
+EXPOSE 3000
 
-CMD ["python3", "test.py"]
+RUN useradd --create-home -s /bin/bash user
+USER user
+
+CMD ["python3", "run.py"]

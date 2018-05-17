@@ -102,3 +102,6 @@ ENV/
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+# custom stuff
+app/static/grammar/*
