@@ -18,7 +18,7 @@
       "unhealthyThreshold": 3,
       "path": "/",
       "interval": 60,
-      "matcher": "200,301"
+      "matcher": "200,301,302"
     },
     "ruleConditions": [
       {
