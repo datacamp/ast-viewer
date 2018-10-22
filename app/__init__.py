@@ -7,28 +7,42 @@ app.config.from_object('config')
 app.wsgi_app = WhiteNoise(app.wsgi_app, root='app/static/', prefix='static/')
 
 # Helper funcs ----------------------------------------------------------------
-from antlr_plsql import ast as plsql_ast
-from antlr_tsql  import ast as tsql_ast
+from antlr_plsql import plsql_grammar, ast as plsql_ast
+from antlr_tsql import tsql_grammar, ast as tsql_ast
 from shellwhat.State import State
 shell_ast = State.get_dispatcher().ast
 
 import ast as python_ast
+from .CustomListener import parse_from_grammar
 from .ast_dump import dump_node
 
-def get_parser(parser_name):
-    parsers = {'plsql': plsql_ast, 'tsql': tsql_ast, 'shell': shell_ast}
+grammars = {
+    'plsql': plsql_grammar,
+    'tsql': tsql_grammar
+}
 
-    return parsers.get(parser_name)
+ast_parsers = {
+    'python': python_ast,
+    'plsql': plsql_ast,
+    'tsql': tsql_ast,
+    'shell': shell_ast
+}
+
+
+def get_raw_ast(code, start, grammar_name):
+    grammar = grammars.get(grammar_name)
+    return parse_from_grammar(grammar, code, start)
+
 
 def get_ast(code, start, parser_name):
-    if parser_name == "plsql":
-        return plsql_ast.parse(code, start)
-    elif parser_name == "tsql":
-        return tsql_ast.parse(code, start)
-    elif parser_name == "python":
-        return python_ast.parse(code)
-    elif parser_name == "shell":
-        return shell_ast.parse(code)
+    parser = ast_parsers.get(parser_name)
+    if 'sql' in parser_name:
+        return parser.parse(code, start)
+    else:
+        try:
+            return parser.parse(code)
+        except SyntaxError:
+            pass
 
     return None
 
@@ -36,11 +50,12 @@ def get_ast(code, start, parser_name):
 from flask import Flask, request,  url_for, redirect, jsonify, make_response
 import yaml
 
+
 def str_or_dump(ast):
     if isinstance(ast, str): return {'type': 'PYTHON_OBJECT', 'data': {"": ast}}
     elif hasattr(ast, '_dump'): return ast._dump()
-    elif isinstance(ast, str): return {'type': 'PYTHON_OBJECT', 'data': {"": ast}}
     else: return dump_node(ast)
+
 
 @app.route('/')
 def index():
@@ -56,13 +71,14 @@ def ast_postgres():
 
     return jsonify(str_or_dump(ast))
 
+
 @app.route('/ast-from-config', methods = ['GET', 'POST'])
 def ast_from_config():
     files = request.files
     print(files['file'])
     data = yaml.load(files['file'])
     print(data)
-    ast_parser = get_parser(data['parser_name'])
+    ast_parser = ast_parsers.get(data['parser_name'])
     
     code = data['code']
     trees = ast_parser.parse_from_yaml(code)
@@ -76,7 +92,3 @@ def ast_from_config():
         out[k] = [{'code': code, 'ast': json_ast} for code, json_ast in zipped]
         print(out)
     return jsonify(out)
-
-
-
-

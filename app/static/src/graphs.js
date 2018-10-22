@@ -1,13 +1,16 @@
 var cytoscape = require('cytoscape');
 var cydagre = require('cytoscape-dagre');
-var dagre = require('dagre');
 
-cydagre( cytoscape, dagre ); // register extension
+cytoscape.use( cydagre );
 
 function init_cyto(el) {
     return cytoscape({
         container: el,
-        layout: {name: 'dagre', rankDir: 'LR'},
+        layout: {
+            name: 'dagre',
+            rankDir: 'LR',
+            nodeDimensionsIncludeLabels: true
+        },
         style: style
     })
 }

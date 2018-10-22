@@ -25,22 +25,24 @@ export default {
         optFields (val) {
             var label = val ? 'data(text)' : ''
             this.cy.style().selector('edge').style('label', label).update()
-
         },
+
         graphData () { 
             this.runPlot()
         }
-
     },
     methods: {
-
         graphAst (data) {
             var builder = utils.AstCytoBuilder();
             var elements = builder.astToCyto(data)
 
             this.cy.elements().remove()
             this.cy.add(elements);
-            this.cy.layout({name: 'dagre', rankDir: 'TB'});
+            this.cy.layout({
+                name: 'dagre',
+                rankDir: 'TB',
+                nodeDimensionsIncludeLabels: true
+            }).run();
         },
 
         graphCode (elements) {
@@ -51,8 +53,13 @@ export default {
             if (!this.optCollapse) this.cy.edges('.collapsed').remove();
             else this.cy.nodes('[?trivial]').remove();
 
-            this.cy.layout({name: 'dagre', rankDir: 'TB'});
+            this.cy.layout({
+                name: 'dagre',
+                rankDir: 'TB',
+                nodeDimensionsIncludeLabels: true
+            }).run();
         },
+
         runPlot () {
             this.graphType == 'ast' ? this.graphAst(this.graphData) : this.graphCode(this.graphData) 
         }

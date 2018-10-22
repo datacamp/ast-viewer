@@ -1,6 +1,8 @@
 var webpack = require("webpack");
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
+    mode: 'development',
     entry: "./index.js",
     output: {
         path: __dirname,
@@ -19,18 +21,36 @@ module.exports = {
     plugins: [
         new webpack.ProvidePlugin({
             'window.ace': "ace"
-        })
+        }),
+        new VueLoaderPlugin(),
+        // for build before grammars are present:
+        // new webpack.IgnorePlugin(/grammar/)
     ],
     module: {
-        loaders: [  {
-            test: /\.js$/,
-            loader: 'babel-loader?presets[]=es2015',
-            exclude: /(node_modules|bower_components|grammar)/
+        rules: [
+            {
+                test: /\.js$/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: ['@babel/preset-env']
+                        }
+                    }
+                ],
+                exclude: /(node_modules|bower_components|grammar)/
             },
             {
                 test: /\.vue$/,
-                use: 'vue-loader'
-            }
+                loader: 'vue-loader'
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    'vue-style-loader',
+                    'css-loader'
+                ]
+              }
         ]
     }
 };
