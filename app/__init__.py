@@ -61,6 +61,18 @@ def str_or_dump(ast):
 def index():
     return redirect(url_for('static', filename='index.html'))
 
+
+@app.route('/raw-ast')
+def raw_ast():
+    args = request.args
+    print(args)
+
+    ast = get_raw_ast(args['code'], args['start'], args['parser'])
+    if ast is None: return make_response("Incorrect parser name", 400)
+
+    return jsonify(str_or_dump(ast))
+
+
 @app.route('/ast')
 def ast_postgres():
     args = request.args

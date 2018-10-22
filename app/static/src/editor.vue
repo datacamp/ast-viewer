@@ -57,8 +57,6 @@ var grammars = [
     }
 ]
 
-var {parseFromGrammar} = require('./CustomListener.js');
-
 import CodeGraph from './code-graph.vue'
 
 // Start cytoscape ----------------------------
@@ -102,25 +100,32 @@ export default {
         },
     },
     methods: {
-
-        getAst () {
+        fetch (endpoint) {
             var code = encodeURIComponent(this.code);
             var start = encodeURIComponent(this.parserStart);
             var parser = encodeURIComponent(this.grammarName);
-            var url = `/ast?code=${code}&start=${start}&parser=${parser}`
-            request
+            var url = `${endpoint}?code=${code}&start=${start}&parser=${parser}`
+            return request
                 .get(url)
                 .set('Accept', 'application/json')
                 .then((res) => {
-                    if (res.status == 200) this.astData = res.body
+                    if (res.status == 200) return res.body
+                })
+        },
 
+        getAst () {
+            this.fetch('/ast')
+                .then((data) => {
+                    this.astData = data
                 })
         },
 
         parseCode () {
-            var grammar = this.crntGrammar.funcs
             if (this.crntGrammar.show_parse)
-                this.codeData = parseFromGrammar(grammar, this.code, this.parserStart)
+                this.fetch('/raw-ast')
+                    .then((data) => {
+                        this.codeData = data
+                    })
             else
                 this.codeData = {}
         },
