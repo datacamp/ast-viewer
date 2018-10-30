@@ -17,7 +17,7 @@ export default {
     mounted () {
         this.cy = graphs.init_cyto(this.$el.querySelector(".cy"))
 
-        this.cy.on('select', ({cyTarget}) => graphs.markPath(this.cy, cyTarget))
+        this.cy.on('select', 'node', ({target}) => graphs.markPath(this.cy, target))
         this.cy.on('vclick', () => this.cy.elements().removeClass('mark'))
         if (!_.isEmpty(this.graphData)) this.runPlot()
     },
@@ -61,7 +61,8 @@ export default {
         },
 
         runPlot () {
-            this.graphType == 'ast' ? this.graphAst(this.graphData) : this.graphCode(this.graphData) 
+            this.graphType == 'ast' ? this.graphAst(this.graphData) : this.graphCode(this.graphData)
+            this.cy.resize()
         }
     }
 }
