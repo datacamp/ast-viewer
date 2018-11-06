@@ -17,7 +17,7 @@ export default {
     mounted () {
         this.cy = graphs.init_cyto(this.$el.querySelector(".cy"))
 
-        this.cy.on('select', ({cyTarget}) => graphs.markPath(this.cy, cyTarget))
+        this.cy.on('select', 'node', ({target}) => graphs.markPath(this.cy, target))
         this.cy.on('vclick', () => this.cy.elements().removeClass('mark'))
         if (!_.isEmpty(this.graphData)) this.runPlot()
     },
@@ -25,22 +25,24 @@ export default {
         optFields (val) {
             var label = val ? 'data(text)' : ''
             this.cy.style().selector('edge').style('label', label).update()
-
         },
+
         graphData () { 
             this.runPlot()
         }
-
     },
     methods: {
-
         graphAst (data) {
             var builder = utils.AstCytoBuilder();
             var elements = builder.astToCyto(data)
 
             this.cy.elements().remove()
             this.cy.add(elements);
-            this.cy.layout({name: 'dagre', rankDir: 'TB'});
+            this.cy.layout({
+                name: 'dagre',
+                rankDir: 'TB',
+                nodeDimensionsIncludeLabels: true
+            }).run();
         },
 
         graphCode (elements) {
@@ -51,10 +53,16 @@ export default {
             if (!this.optCollapse) this.cy.edges('.collapsed').remove();
             else this.cy.nodes('[?trivial]').remove();
 
-            this.cy.layout({name: 'dagre', rankDir: 'TB'});
+            this.cy.layout({
+                name: 'dagre',
+                rankDir: 'TB',
+                nodeDimensionsIncludeLabels: true
+            }).run();
         },
+
         runPlot () {
-            this.graphType == 'ast' ? this.graphAst(this.graphData) : this.graphCode(this.graphData) 
+            this.graphType == 'ast' ? this.graphAst(this.graphData) : this.graphCode(this.graphData)
+            this.cy.resize()
         }
     }
 }
