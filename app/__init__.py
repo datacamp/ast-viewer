@@ -4,7 +4,7 @@ from whitenoise import WhiteNoise
 app = Flask(__name__)
 app.config.from_object('config')
 
-app.wsgi_app = WhiteNoise(app.wsgi_app, root='app/static/', prefix='static/')
+app.wsgi_app = WhiteNoise(app.wsgi_app, root='app/static/', prefix='/', index_file=True)
 
 # Helper funcs ----------------------------------------------------------------
 from antlr_plsql import plsql_grammar, ast as plsql_ast
@@ -47,7 +47,7 @@ def get_ast(code, start, parser_name):
     return None
 
 # Views -----------------------------------------------------------------------
-from flask import Flask, request,  url_for, redirect, jsonify, make_response
+from flask import Flask, request, url_for, redirect, jsonify, make_response, send_file
 import yaml
 
 
@@ -104,3 +104,8 @@ def ast_from_config():
         out[k] = [{'code': code, 'ast': json_ast} for code, json_ast in zipped]
         print(out)
     return jsonify(out)
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return send_file('./static/index.html')

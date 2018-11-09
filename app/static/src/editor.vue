@@ -3,7 +3,7 @@
     <pre id="editor1"></pre>
     <div class="scrollmargin"></div>
 
-    parser: 
+    parser:
     <select type="text"  v-model="grammarName" v-on:change="resetStartPoint">
         <option v-for="grammar in grammars" :key="grammar.name" :value="grammar.name">
             {{grammar.name}}
@@ -11,9 +11,7 @@
     </select>
 
     start: <input type="text" v-model="parserStart">
-    <br>
-    <button v-on:click="parseCode">Submit Code</button>
-    <button v-on:click="routeToCode">Save</button>
+    <button v-on:click="submit">Submit Code</button>
 
     <!-- NODE GRAPH -->
 
@@ -35,7 +33,7 @@ var graphs = require('./graphs.js')
 var request = require('superagent')
 
 var grammars = [
-    { 
+    {
         name: 'plsql',
         start: 'sql_script',
         show_parse: true
@@ -95,8 +93,8 @@ export default {
         crntGrammar () { return this.grammars.filter(({name}) => name == this.grammarName)[0]},
     },
     watch: {
-        codeData () { 
-            this.getAst() 
+        codeData () {
+            this.getAst()
         },
     },
     methods: {
@@ -141,6 +139,11 @@ export default {
 
         resetStartPoint () {
             this.parserStart = this.crntGrammar.start
+        },
+
+        submit () {
+            this.parseCode()
+            this.routeToCode()
         },
 
         setupEditor(editor) {
