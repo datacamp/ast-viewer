@@ -10,6 +10,7 @@
         "containerTag": "${CIRCLE_SHA1}",
         "containerPort": 3000,
         "memoryReservation": 256,
+        "cpu": 64,
         "essential": true
       }
     ],
