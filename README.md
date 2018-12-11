@@ -1,6 +1,7 @@
 # ast-viewer
 
 [![CircleCI](https://circleci.com/gh/datacamp/ast-viewer.svg?style=svg&circle-token=79a78a39ce7228326c9fa458833aee242eb0322a)](https://circleci.com/gh/datacamp/ast-viewer)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdatacamp%2Fast-viewer.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdatacamp%2Fast-viewer?ref=badge_shield)
 
 Hosted at https://ast-viewer.datacamp.com, the ast viewer allows users to quickly parse Python, SQL (Postgres + Transact) and Shell code and inspect the resulting parse trees and abstract syntax trees. This makes development of parsing grammars ([example]) easier, but can also help when writing SCTs to figure out which ASTs are being generated for different submissions.
 
@@ -23,3 +24,7 @@ You can now visit http://localhost:3000.
 ## Deployment
 
 The app is deployed to CircleCI on DataCamp's ECS cluster. The `master` branch builds and deploys to https://ast-viewer.datacamp-staging.com. If you tag the master with tags that start with `v`, the app will be deployed to https://ast-viewer.datacamp.com.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdatacamp%2Fast-viewer.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdatacamp%2Fast-viewer?ref=badge_large)
