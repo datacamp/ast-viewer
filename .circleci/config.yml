@@ -3,7 +3,6 @@ orbs:
   datacamp-ecr: datacamp/ecr@0.0.4
   datacamp-deploy: datacamp/deploy@0.0.8
 workflows:
-  version: 2
   build_and_deploy:
     jobs:
       - datacamp-ecr/build_and_push_image_to_ecr:
