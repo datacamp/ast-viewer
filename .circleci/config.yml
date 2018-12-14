@@ -18,10 +18,10 @@ workflows:
           ecs-deploy-url: $STAGING_DEPLOY_URL
           ecs-deploy-password: $STAGING_ECS_DEPLOY_PASSW
           extra-env: "ENVIRONMENT=staging DESIRED_COUNT=1"
-      - deploy-to-prod:
-          context: org-global
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
+      # - deploy-to-prod:
+      #     context: org-global
+      #     filters:
+      #       tags:
+      #         only: /^v.*/
+      #       branches:
+      #         ignore: /.*/
