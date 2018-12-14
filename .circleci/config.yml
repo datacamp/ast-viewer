@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  datacamp-ecr: datacamp/ecr@0.0.5
+  datacamp-ecr: datacamp/ecr@0.0.6
   datacamp-deploy: datacamp/deploy@0.0.12
 workflows:
   version: 2.1 
