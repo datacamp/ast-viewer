@@ -37,3 +37,7 @@ workflows:
           context: org-global
           requires:
             - datacamp-ecr/pull_push_to_account
+          service-name: ast-viewer
+          ecs-deploy-url: $PROD_DEPLOY_URL
+          ecs-deploy-password: $PROD_ECS_DEPLOY_PASSWORD
+          extra-env: "ENVIRONMENT=prod DESIRED_COUNT=2"
