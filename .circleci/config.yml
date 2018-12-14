@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  datacamp-ecr: datacamp/ecr@0.0.4
+  datacamp-ecr: datacamp/ecr@0.0.5
   datacamp-deploy: datacamp/deploy@0.0.12
 workflows:
   version: 2.1 
@@ -14,14 +14,26 @@ workflows:
           extra-docker-args: "--build-arg NPM_TOKEN=$NPM_TOKEN"
       - datacamp-deploy/deploy:
           context: org-global
+          requires:
+            - datacamp-ecr/build_and_push_image_to_ecr
           service-name: ast-viewer
           ecs-deploy-url: $STAGING_DEPLOY_URL
           ecs-deploy-password: $STAGING_ECS_DEPLOY_PASSWORD
           extra-env: "ENVIRONMENT=staging DESIRED_COUNT=1"
-      # - deploy-to-prod:
-      #     context: org-global
-      #     filters:
-      #       tags:
-      #         only: /^v.*/
-      #       branches:
-      #         ignore: /.*/
+      - datacamp-ecr/pull_push_to_account:
+          context: org-global
+          from-aws-access-key-id: $STAGING_AWS_ACCESS_KEY_ID
+          from-aws-secret-access-key: $STAGING_AWS_SECRET_ACCESS_KEY
+          to-aws-access-key-id: $PROD_AWS_ACCESS_KEY_ID
+          to-aws-secret-access-key: $PROD_AWS_SECRET_ACCESS_KEY
+          from-account-url: $STAGING_ECR_URL
+          to-account-url: $PROD_ECR_URL
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - datacamp-deploy/deploy:
+          context: org-global
+          requires:
+            - datacamp-ecr/pull_push_to_account
