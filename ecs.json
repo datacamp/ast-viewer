@@ -1,7 +1,7 @@
 {
     "cluster": "datacamp-services",
     "servicePort": 3000,
-    "serviceProtocol": "HTTP",
+    "serviceProtocol": "none",
     "desiredCount": ${DESIRED_COUNT},
     "containers": [
       {
@@ -11,20 +11,19 @@
         "containerPort": 3000,
         "memoryReservation": 256,
         "cpu": 64,
-        "essential": true
-      }
-    ],
-    "healthCheck": {
-      "healthyThreshold": 3,
-      "unhealthyThreshold": 3,
-      "path": "/",
-      "interval": 60,
-      "matcher": "200,301,302"
-    },
-    "ruleConditions": [
-      {
-        "hostname": "ast-viewer",
-        "listeners": ["https"]
+        "essential": true,
+        "healthCheck": {
+          "command": [
+            "CMD-SHELL",
+            "curl -f http://localhost:3000/ || exit 1"
+          ],
+          "interval": 10
+        },
+        "dockerLabels": {
+          "com.datadoghq.ad.instances": "[{ \"name\": \"service_check\", \"url\": \"http://%%host%%:%%port%%/\", \"tags\": [\"service:${SERVICE}\"] }]",
+          "com.datadoghq.ad.check_names": "[\"http_check\"]",
+          "com.datadoghq.ad.init_configs": "[{}]"
+        }
       }
     ]
   }
