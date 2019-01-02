@@ -88,15 +88,15 @@ def ast_postgres():
 def ast_from_config():
     files = request.files
     print(files['file'])
-    data = yaml.load(files['file'])
+    data = yaml.safe_load(files['file'])
     print(data)
     ast_parser = ast_parsers.get(data['parser_name'])
-    
+
     code = data['code']
     trees = ast_parser.parse_from_yaml(code)
 
     out = {}
-    for k, v in trees.items(): 
+    for k, v in trees.items():
         json_asts = [str_or_dump(tree) for tree in v]
         sql_cmds = code[k]
         zipped = zip(sql_cmds, json_asts)
