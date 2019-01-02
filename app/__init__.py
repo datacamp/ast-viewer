@@ -13,7 +13,7 @@ from shellwhat.State import State
 shell_ast = State.get_dispatcher().ast
 
 import ast as python_ast
-from .CustomListener import parse_from_grammar
+from .CytoListener import parse_from_grammar
 from .ast_dump import dump_node
 
 grammars = {

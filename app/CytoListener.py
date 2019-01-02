@@ -2,11 +2,11 @@ from antlr4.tree import Tree
 from antlr4 import InputStream, CommonTokenStream
 
 
-class Listener(Tree.ParseTreeListener):
+class CytoListener(Tree.ParseTreeListener):
     """This class defines a complete listener for a parse tree produced by ExprParser."""
 
     def __init__(self):
-        super(Listener, self).__init__()
+        super(CytoListener, self).__init__()
         self.node_map = {}
         self.node_edges = []
         self.trivial_root = None
@@ -101,7 +101,7 @@ def parse_from_grammar(grammar, data, start):
     parser.buildParseTrees = True
 
     tree = getattr(parser, start)()
-    listener = Listener()
+    listener = CytoListener()
     Tree.ParseTreeWalker.DEFAULT.walk(listener, tree)
 
     elements = {
