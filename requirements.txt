@@ -5,4 +5,4 @@ whitenoise==4.1
 PyYAML==3.12
 
 antlr4-python3-runtime==4.7.1
-antlr-ast==0.2.1
+antlr-ast==0.4.1

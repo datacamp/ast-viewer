@@ -7,8 +7,8 @@ app.config.from_object('config')
 app.wsgi_app = WhiteNoise(app.wsgi_app, root='app/static/', prefix='/', index_file=True)
 
 # Helper funcs ----------------------------------------------------------------
-from antlr_plsql import plsql_grammar, ast as plsql_ast
-from antlr_tsql import tsql_grammar, ast as tsql_ast
+from antlr_plsql import grammar as plsql_grammar, ast as plsql_ast
+from antlr_tsql import grammar as tsql_grammar, ast as tsql_ast
 from shellwhat.State import State
 shell_ast = State.get_dispatcher().ast
 
