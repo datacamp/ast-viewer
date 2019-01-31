@@ -1,5 +1,5 @@
 {
-    "cluster": "datacamp-services",
+    "cluster": "${CLUSTER}",
     "servicePort": 3000,
     "serviceProtocol": "none",
     "desiredCount": ${DESIRED_COUNT},
