@@ -6,7 +6,7 @@
     "containers": [
       {
         "containerName": "${SERVICE}",
-        "containerImage": "${SERVICE}",
+        "containerImage": "ast-viewer",
         "containerTag": "${CIRCLE_SHA1}",
         "containerPort": 3000,
         "memoryReservation": 350,
