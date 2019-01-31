@@ -28,6 +28,7 @@ workflows:
           requires:
             - datacamp-ecr/build_and_push_image_to_ecr
           service-name: ast-viewer-$CIRCLE_BRANCH
+          cluster: backstage
           ecs-deploy-url: $BACKSTAGE_DEPLOY_URL
           ecs-deploy-password: $BACKSTAGE_ECS_DEPLOY_PASSWORD
           extra-env: "ENVIRONMENT=staging DESIRED_COUNT=1"
