@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
   datacamp-ecr: datacamp/ecr@0.0.6
-  datacamp-deploy: datacamp/deploy@0.0.12
+  datacamp-deploy: datacamp/deploy@0.0.25
 workflows:
   version: 2.1 
   build_and_deploy:
@@ -16,18 +16,14 @@ workflows:
           context: org-global
           requires:
             - datacamp-ecr/build_and_push_image_to_ecr
-          service-name: ast-viewer
           ecs-deploy-url: $STAGING_DEPLOY_URL
           ecs-deploy-password: $STAGING_ECS_DEPLOY_PASSWORD
-          extra-env: "ENVIRONMENT=staging DESIRED_COUNT=1"
+          extra-env: "DESIRED_COUNT=1 CLUSTER=datacamp-services SERVICE=ast-viewer"
+          filters:
+            branches:
+              only: master
       - datacamp-ecr/pull_push_to_account:
           context: org-global
-          from-aws-access-key-id: $STAGING_AWS_ACCESS_KEY_ID
-          from-aws-secret-access-key: $STAGING_AWS_SECRET_ACCESS_KEY
-          to-aws-access-key-id: $PROD_AWS_ACCESS_KEY_ID
-          to-aws-secret-access-key: $PROD_AWS_SECRET_ACCESS_KEY
-          from-account-url: $STAGING_ECR_URL
-          to-account-url: $PROD_ECR_URL
           filters:
             tags:
               only: /^v.*/
@@ -42,7 +38,14 @@ workflows:
               only: /^v.*/
             branches:
               ignore: /.*/
-          service-name: ast-viewer
           ecs-deploy-url: $PROD_DEPLOY_URL
           ecs-deploy-password: $PROD_ECS_DEPLOY_PASSWORD
-          extra-env: "ENVIRONMENT=prod DESIRED_COUNT=2"
+          extra-env: "DESIRED_COUNT=2 CLUSTER=datacamp-services SERVICE=ast-viewer"
+      - datacamp-deploy/backstage-deploy:
+          context: org-global
+          requires:
+            - datacamp-ecr/build_and_push_image_to_ecr
+          extra-env: "SERVICE=ast-viewer-$CIRCLE_BRANCH CLUSTER=backstage DESIRED_COUNT=1"
+          filters:
+            branches:
+              only: /backstage-.*/
