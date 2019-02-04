@@ -47,7 +47,7 @@ workflows:
           ecs-deploy-url: $PROD_DEPLOY_URL
           ecs-deploy-password: $PROD_ECS_DEPLOY_PASSWORD
           extra-env: "DESIRED_COUNT=2 CLUSTER=datacamp-services SERVICE=ast-viewer"
-      - datacamp-deploy/backstage-create:
+      - datacamp-deploy/backstage-deploy:
           context: org-global
           requires:
             - datacamp-ecr/build_and_push_image_to_ecr
