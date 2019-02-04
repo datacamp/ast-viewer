@@ -23,18 +23,6 @@ workflows:
           filters:
             branches:
               only: master
-      - datacamp-deploy/deploy:
-          context: org-global
-          requires:
-            - datacamp-ecr/build_and_push_image_to_ecr
-          service-name: ast-viewer-$CIRCLE_BRANCH
-          cluster: backstage
-          ecs-deploy-url: $BACKSTAGE_DEPLOY_URL
-          ecs-deploy-password: $BACKSTAGE_ECS_DEPLOY_PASSWORD
-          extra-env: "ENVIRONMENT=staging DESIRED_COUNT=1"
-          filters:
-            branches:
-              only: /backstage-.*/
       - datacamp-ecr/pull_push_to_account:
           context: org-global
           from-aws-access-key-id: $STAGING_AWS_ACCESS_KEY_ID
@@ -61,3 +49,11 @@ workflows:
           ecs-deploy-url: $PROD_DEPLOY_URL
           ecs-deploy-password: $PROD_ECS_DEPLOY_PASSWORD
           extra-env: "ENVIRONMENT=prod DESIRED_COUNT=2"
+      - datacamp-deploy/backstage-create:
+          context: org-global
+          requires:
+            - datacamp-ecr/build_and_push_image_to_ecr
+          extra-env: "SERVICE=ast-viewer-$CIRCLE_BRANCH CLUSTER=backstage"
+          filters:
+            branches:
+              only: /backstage-.*/
