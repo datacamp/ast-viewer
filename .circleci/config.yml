@@ -24,12 +24,6 @@ workflows:
               only: master
       - datacamp-ecr/pull_push_to_account:
           context: org-global
-          from-aws-access-key-id: $STAGING_AWS_ACCESS_KEY_ID
-          from-aws-secret-access-key: $STAGING_AWS_SECRET_ACCESS_KEY
-          to-aws-access-key-id: $PROD_AWS_ACCESS_KEY_ID
-          to-aws-secret-access-key: $PROD_AWS_SECRET_ACCESS_KEY
-          from-account-url: $STAGING_ECR_URL
-          to-account-url: $PROD_ECR_URL
           filters:
             tags:
               only: /^v.*/
