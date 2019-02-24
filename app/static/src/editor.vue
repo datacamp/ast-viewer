@@ -27,7 +27,6 @@
 
 <script>
 
-var antlr = require('antlr4')
 var utils = require('./utils.js')
 var graphs = require('./graphs.js')
 var request = require('superagent')
@@ -170,11 +169,8 @@ export default {
     text-align: center;
 }
 
-.cy-container {
-    border: 1px solid black;
-    margin: auto;
-    width: 90%;
-    height: 400px;
+.container {
+    margin-bottom: 200px;
 }
 </style>
 

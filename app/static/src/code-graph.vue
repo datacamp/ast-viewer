@@ -1,11 +1,10 @@
 <template>
-  <div class="cy-container">
+  <div v-on:mousedown="drag" class="cy-container" ref="container">
       <div class="cy"></div>
   </div>
 </template>
 
 <script>
-var antlr = require('antlr4')
 var utils = require('./utils.js')
 var graphs = require('./graphs.js')
 var _ = require('lodash')
@@ -27,11 +26,31 @@ export default {
             this.cy.style().selector('edge').style('label', label).update()
         },
 
-        graphData () { 
+        graphData () {
             this.runPlot()
         }
     },
     methods: {
+        drag (event) {
+            if (event.offsetY > parseInt(getComputedStyle(this.$refs.container, '').height) - 4) {
+                this.dragStart = event.y;
+                const containerResize = this.containerResize
+                // const cy_resize = this.cy.resize.bind(this.cy)
+                document.addEventListener("mousemove", containerResize, false);
+                document.addEventListener("mouseup", function(){
+                    document.removeEventListener("mousemove", containerResize, false);
+                    // cy_resize()
+                }, false);
+            }
+        },
+
+        containerResize (event) {
+            const dy =  event.y - this.dragStart;
+            this.dragStart = event.y;
+            this.$refs.container.style.height = (parseInt(getComputedStyle(this.$refs.container, '').height) + dy) + "px";
+            this.cy.resize()
+        },
+
         graphAst (data) {
             var builder = utils.AstCytoBuilder();
             var elements = builder.astToCyto(data)
@@ -70,6 +89,26 @@ export default {
 </script>
 
 <style scoped>
+
+.cy-container {
+    border: 1px solid black;
+    margin: auto;
+    width: 90%;
+    height: 400px;
+    padding-bottom: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.cy-container:after {
+    content: " ";
+    background-color: #ccc;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 4px;
+    cursor: ns-resize;
+}
 
 .cy {
     width: 100%;

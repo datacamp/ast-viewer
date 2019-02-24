@@ -53,8 +53,15 @@ import yaml
 
 def str_or_dump(ast):
     if isinstance(ast, str): return {'type': 'PYTHON_OBJECT', 'data': {"": ast}}
-    elif hasattr(ast, '_dump'): return ast._dump()
     else: return dump_node(ast)
+
+
+def parse_from_yaml(fname, parser):
+    data = yaml.safe_load(open(fname)) if isinstance(fname, str) else fname
+    out = {}
+    for start, cmds in data.items():
+        out[start] = [parser.parse(cmd, start) for cmd in cmds]
+    return out
 
 
 @app.route('/')
@@ -93,7 +100,7 @@ def ast_from_config():
     ast_parser = ast_parsers.get(data['parser_name'])
 
     code = data['code']
-    trees = ast_parser.parse_from_yaml(code)
+    trees = parse_from_yaml(code, ast_parser)
 
     out = {}
     for k, v in trees.items():
