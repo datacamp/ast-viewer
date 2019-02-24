@@ -1,5 +1,5 @@
 from antlr4.tree import Tree
-from antlr4 import InputStream, CommonTokenStream
+from antlr_ast.ast import parse as parse_ast
 
 
 class CytoListener(Tree.ParseTreeListener):
@@ -93,14 +93,8 @@ class CytoListener(Tree.ParseTreeListener):
             return False
 
 
-def parse_from_grammar(grammar, data, start):
-    chars = InputStream(data)
-    lexer = grammar.Lexer(chars)
-    tokens = CommonTokenStream(lexer)
-    parser = grammar.Parser(tokens)
-    parser.buildParseTrees = True
-
-    tree = getattr(parser, start)()
+def parse_from_grammar(grammar, text, start):
+    tree = parse_ast(grammar, text, start)
     listener = CytoListener()
     Tree.ParseTreeWalker.DEFAULT.walk(listener, tree)
 
@@ -114,8 +108,8 @@ def parse_from_grammar(grammar, data, start):
 if __name__ == "__main__":
     from app.__init__ import grammars
 
-    raw_ast = parse_from_grammar(
+    antlr_ast = parse_from_grammar(
         grammars["plsql"], "SELECT id FROM artists WHERE id > 100", "sql_script"
     )
 
-    print(raw_ast)
+    print(antlr_ast)

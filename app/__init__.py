@@ -13,6 +13,7 @@ from shellwhat.State import State
 shell_ast = State.get_dispatcher().ast
 
 import ast as python_ast
+from antlr_ast.ast import parse as parse_ast, process_tree
 from .CytoListener import parse_from_grammar
 from .ast_dump import dump_node
 
@@ -29,12 +30,33 @@ ast_parsers = {
 }
 
 
-def get_raw_ast(code, start, grammar_name):
+def get_antlr_ast(grammar_name, code, start):
     grammar = grammars.get(grammar_name)
     return parse_from_grammar(grammar, code, start)
 
 
-def get_ast(code, start, parser_name):
+def get_base_ast(grammar_name, code, start):
+    if 'sql' in grammar_name:
+        grammar = grammars.get(grammar_name)
+        tree = parse_ast(grammar, code, start)
+        return process_tree(tree, simplify=False)
+    # else:  # TODO
+
+    return None
+
+
+def get_alias_ast(grammar_name, code, start):
+    if 'sql' in grammar_name:
+        grammar = grammars.get(grammar_name)
+        parser = ast_parsers.get(grammar_name)
+        tree = parse_ast(grammar, code, start)
+        return process_tree(tree, parser.Transformer, simplify=False)
+    # else:  # TODO
+
+    return None
+
+
+def get_ast(parser_name, code, start):
     parser = ast_parsers.get(parser_name)
     if 'sql' in parser_name:
         return parser.parse(code, start)
@@ -69,23 +91,31 @@ def index():
     return redirect(url_for('static', filename='index.html'))
 
 
-@app.route('/raw-ast')
-def raw_ast():
-    args = request.args
-    print(args)
+@app.route('/antlr-ast')
+def antlr_ast():
+    return ast_request(get_antlr_ast)
 
-    ast = get_raw_ast(args['code'], args['start'], args['parser'])
-    if ast is None: return make_response("Incorrect parser name", 400)
 
-    return jsonify(str_or_dump(ast))
+@app.route('/base-ast')
+def base_ast():
+    return ast_request(get_base_ast)
+
+
+@app.route('/alias-ast')
+def alias_ast():
+    return ast_request(get_alias_ast)
 
 
 @app.route('/ast')
-def ast_postgres():
+def final_ast():
+    return ast_request(get_ast)
+
+
+def ast_request(ast_function):
     args = request.args
     print(args)
 
-    ast = get_ast(args['code'], args['start'], args['parser'])
+    ast = ast_function(args['parser'], args['code'], args['start'])
     if ast is None: return make_response("Incorrect parser name", 400)
 
     return jsonify(str_or_dump(ast))

@@ -16,11 +16,19 @@
     <!-- NODE GRAPH -->
 
     <div class="container">
+        ANTLR AST:
         <label>collapse: <input type="checkbox" v-model="optCollapse"></label>
-        <code-graph graph-type="parser" :graph-data="codeData" :opt-collapse="optCollapse"></code-graph>
+        <code-graph graph-type="parser" :graph-data="antlrData" :opt-collapse="optCollapse"></code-graph>
 
+        Final AST
         <label>show fields: <input type="checkbox" v-model="optFields" v-on:change="getAst"></label>
         <code-graph graph-type="ast" :graph-data="astData" :opt-fields="optFields"></code-graph>
+
+        Base AST:
+        <code-graph graph-type="ast" :graph-data="baseAstData" :opt-fields="true"></code-graph>
+
+        Alias AST:
+        <code-graph graph-type="ast" :graph-data="aliasAstData" :opt-fields="true"></code-graph>
     </div>
   </div>
 </template>
@@ -69,7 +77,9 @@ export default {
             optCollapse: true,
             optFields: true,
             grammars: grammars,
-            codeData: {},
+            antlrData: {},
+            baseAstData: {},
+            aliasAstData: {},
             astData: {}
         }
     },
@@ -92,8 +102,10 @@ export default {
         crntGrammar () { return this.grammars.filter(({name}) => name == this.grammarName)[0]},
     },
     watch: {
-        codeData () {
+        antlrData () {
             this.getAst()
+            this.getBaseAst()
+            this.getAliasAst()
         },
     },
     methods: {
@@ -110,21 +122,41 @@ export default {
                 })
         },
 
+        parseCode () {
+            if (this.crntGrammar.show_parse)
+                this.fetch('/antlr-ast')
+                    .then((data) => {
+                        this.antlrData = data
+                    })
+            else
+                this.antlrData = {}
+        },
+
+        getBaseAst () {
+            if (this.crntGrammar.show_parse)
+                this.fetch('/base-ast')
+                    .then((data) => {
+                        this.baseAstData = data
+                    })
+            else
+                this.antlrData = {}
+        },
+
+        getAliasAst () {
+            if (this.crntGrammar.show_parse)
+                this.fetch('/alias-ast')
+                    .then((data) => {
+                        this.aliasAstData = data
+                    })
+            else
+                this.antlrData = {}
+        },
+
         getAst () {
             this.fetch('/ast')
                 .then((data) => {
                     this.astData = data
                 })
-        },
-
-        parseCode () {
-            if (this.crntGrammar.show_parse)
-                this.fetch('/raw-ast')
-                    .then((data) => {
-                        this.codeData = data
-                    })
-            else
-                this.codeData = {}
         },
 
         routeToCode () {
