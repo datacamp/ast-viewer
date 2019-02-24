@@ -32,7 +32,7 @@ export default {
     },
     methods: {
         drag (event) {
-            if (event.offsetY > parseInt(getComputedStyle(this.$refs.container, '').height) - 4) {
+            if (event.offsetY > parseInt(getComputedStyle(this.$refs.container, '').height) - 10) {
                 this.dragStart = event.y;
                 const containerResize = this.containerResize
                 // const cy_resize = this.cy.resize.bind(this.cy)
@@ -91,22 +91,23 @@ export default {
 <style scoped>
 
 .cy-container {
-    border: 1px solid black;
-    margin: auto;
-    width: 90%;
+    border: 1px solid #888;
+    width: 100%;
     height: 400px;
-    padding-bottom: 4px;
+    padding-bottom: 10px;
     position: relative;
     overflow: hidden;
 }
 
 .cy-container:after {
-    content: " ";
+    content: "...";
+    line-height: 4px;
+    text-align: center;
     background-color: #ccc;
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 4px;
+    height: 10px;
     cursor: ns-resize;
 }
 

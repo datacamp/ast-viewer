@@ -1,34 +1,40 @@
 <template>
   <div>
     <pre id="editor1"></pre>
-    <div class="scrollmargin"></div>
+    <p>
+        parser:
+        <select type="text"  v-model="grammarName" v-on:change="resetStartPoint">
+            <option v-for="grammar in grammars" :key="grammar.name" :value="grammar.name">
+                {{grammar.name}}
+            </option>
+        </select>
 
-    parser:
-    <select type="text"  v-model="grammarName" v-on:change="resetStartPoint">
-        <option v-for="grammar in grammars" :key="grammar.name" :value="grammar.name">
-            {{grammar.name}}
-        </option>
-    </select>
-
-    start: <input type="text" v-model="parserStart">
-    <button v-on:click="submit">Submit Code</button>
-
-    <!-- NODE GRAPH -->
+        start: <input type="text" v-model="parserStart">
+        <button v-on:click="submit">Submit Code</button>
+    </p>
 
     <div class="container">
-        ANTLR AST:
-        <label>collapse: <input type="checkbox" v-model="optCollapse"></label>
+        <p>
+            ANTLR AST:
+            <label>collapse tree: <input type="checkbox" v-model="optCollapse"></label>
+        </p>
         <code-graph graph-type="parser" :graph-data="antlrData" :opt-collapse="optCollapse"></code-graph>
 
-        Final AST
-        <label>show fields: <input type="checkbox" v-model="optFields" v-on:change="getAst"></label>
+        <p>
+            Base AST:
+        </p>
+        <code-graph graph-type="ast" :graph-data="baseAstData" :opt-fields="true" style="height:0px"></code-graph>
+
+        <p>
+            Alias AST:
+        </p>
+        <code-graph graph-type="ast" :graph-data="aliasAstData" :opt-fields="true" style="height:0px"></code-graph>
+
+        <p>
+            Final AST:
+            <label>show fields: <input type="checkbox" v-model="optFields"></label>
+        </p>
         <code-graph graph-type="ast" :graph-data="astData" :opt-fields="optFields"></code-graph>
-
-        Base AST:
-        <code-graph graph-type="ast" :graph-data="baseAstData" :opt-fields="true"></code-graph>
-
-        Alias AST:
-        <code-graph graph-type="ast" :graph-data="aliasAstData" :opt-fields="true"></code-graph>
     </div>
   </div>
 </template>
@@ -196,12 +202,9 @@ export default {
     height: 200px;
 }
 
-.scrollmargin {
-    height: 80px;
-    text-align: center;
-}
-
 .container {
+    width: 90%;
+    margin: auto;
     margin-bottom: 200px;
 }
 </style>
