@@ -53,7 +53,7 @@ class CytoListener(Tree.ParseTreeListener):
     def make_cyto_node(self, ctx):
         name = ctx.__class__.__name__
         start = ctx.start if hasattr(ctx, "start") else ctx.symbol
-        stop = ctx.stop if hasattr(ctx, "stop") else ctx.symbol
+        stop = ctx.stop if getattr(ctx, "stop", None) else getattr(ctx, "symbol", {})
         data = {
             "id": self.current_id,
             "text": ctx.getText(),
@@ -65,8 +65,8 @@ class CytoListener(Tree.ParseTreeListener):
             "lineInfo": {
                 "col_start": start.start,
                 "line_start": start.line,
-                "col_end": stop.stop,
-                "line_end": stop.line,
+                "col_end": getattr(stop, "stop", -1),
+                "line_end": getattr(stop, "line", -1),
             },
         }
 
@@ -84,7 +84,7 @@ class CytoListener(Tree.ParseTreeListener):
         if (
             ctx.parentCtx is not None
             and len(ctx.parentCtx.children) == 1
-            and hasattr(ctx, "children")
+            and getattr(ctx, "children", None)
             and len(ctx.children) == 1
             and ctx.children[0].__class__.__name__ != "TerminalNodeImpl"
         ):
