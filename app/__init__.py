@@ -50,7 +50,7 @@ def get_alias_ast(grammar_name, code, start):
         grammar = grammars.get(grammar_name)
         parser = ast_parsers.get(grammar_name)
         tree = parse_ast(grammar, code, start)
-        return process_tree(tree, parser.Transformer, simplify=False)
+        return process_tree(tree, transformer_cls=parser.Transformer, simplify=False)
     # else:  # TODO
 
     return None
