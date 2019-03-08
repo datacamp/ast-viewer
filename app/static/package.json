@@ -5,7 +5,6 @@
   "main": "index.js",
   "dependencies": {
     "ace-builds": "^1.4.1",
-    "antlr4": "^4.7.1",
     "cytoscape": "^3.2.18",
     "cytoscape-dagre": "^2.2.2",
     "dagre": "^0.8.2",

@@ -1,8 +1,8 @@
-gunicorn==19.7.1
-gevent==1.2.1
-Flask==1.0.2
-whitenoise==4.1
-PyYAML==3.12
+gunicorn~=19.7.1
+gevent~=1.2.1
+Flask~=1.0.2
+whitenoise~=4.1
+PyYAML~=3.12
 
-antlr4-python3-runtime==4.7.1
-antlr-ast==0.4.1
+antlr4-python3-runtime~=4.7.2
+antlr-ast~=0.4.1
