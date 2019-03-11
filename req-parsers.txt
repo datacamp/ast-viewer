@@ -1,4 +1,4 @@
-sqlwhat==3.4.0
+sqlwhat==3.5.0
 shellwhat==1.1.0
-antlr-plsql==0.7.0
-antlr-tsql==0.11.0
+antlr-plsql==0.8.0
+antlr-tsql==0.12.0
