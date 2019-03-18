@@ -145,7 +145,7 @@ export default {
                         this.baseAstData = data
                     })
             else
-                this.antlrData = {}
+                this.baseAstData = {}
         },
 
         getAliasAst () {
@@ -155,7 +155,7 @@ export default {
                         this.aliasAstData = data
                     })
             else
-                this.antlrData = {}
+                this.aliasAstData = {}
         },
 
         getAst () {
