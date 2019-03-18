@@ -10,6 +10,8 @@ RUN apt-get install -y python python-dev python-pip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+ENV SHELLWHAT_PARSER='osh'
+
 WORKDIR /app
 
 # Build node modules
