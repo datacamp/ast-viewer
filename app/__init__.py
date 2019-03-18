@@ -15,7 +15,8 @@ from shellwhat.parsers import DEFAULT_PARSER as shell_ast
 import ast as python_ast
 from antlr_ast.ast import parse as parse_ast, process_tree
 from .CytoListener import parse_from_grammar
-from .ast_dump import dump_node
+from .ast_dump import dump_node, dump_bash
+import bashlex
 
 grammars = {
     'plsql': plsql_grammar,
@@ -26,7 +27,9 @@ ast_parsers = {
     'python': python_ast,
     'plsql': plsql_ast,
     'tsql': tsql_ast,
-    'shell': shell_ast
+    'shell': shell_ast,
+    'bash-simple': bashlex,
+    'bash-verbose': bashlex,
 }
 
 
@@ -73,8 +76,10 @@ from flask import Flask, request, url_for, redirect, jsonify, make_response, sen
 import yaml
 
 
-def str_or_dump(ast):
-    if isinstance(ast, str): return {'type': 'PYTHON_OBJECT', 'data': {"": ast}}
+def str_or_dump(ast, parser):
+    if parser == 'bash-simple': return dump_bash(ast)
+    elif parser == 'bash-verbose': return dump_bash(ast, v=True)
+    elif isinstance(ast, str): return {'type': 'PYTHON_OBJECT', 'data': {"": ast}}
     else: return dump_node(ast)
 
 
@@ -116,7 +121,7 @@ def ast_request(ast_function):
     ast = ast_function(args['parser'], args['code'], args['start'])
     if ast is None: return make_response("Incorrect parser name", 400)
 
-    return jsonify(str_or_dump(ast))
+    return jsonify(str_or_dump(ast, args['parser']))
 
 
 @app.route('/ast-from-config', methods = ['GET', 'POST'])
@@ -130,7 +135,7 @@ def ast_from_config():
 
     out = {}
     for k, v in trees.items():
-        json_asts = [str_or_dump(tree) for tree in v]
+        json_asts = [str_or_dump(tree, ast_parser) for tree in v]
         sql_cmds = code[k]
         zipped = zip(sql_cmds, json_asts)
         # entry with attrs code: sql_cmd, ast: json_ast

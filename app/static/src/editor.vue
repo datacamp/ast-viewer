@@ -65,7 +65,17 @@ var grammars = [
         name: 'shell',
         start: 'NA',
         show_parse: false
-    }
+    },
+    {
+        name: 'bash-simple',
+        show_parse: false,
+        start: 'NA'
+    },
+    {
+        name: 'bash-verbose',
+        show_parse: false,
+        start: 'NA'
+    },
 ]
 
 import CodeGraph from './code-graph.vue'
