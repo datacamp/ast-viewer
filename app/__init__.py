@@ -10,7 +10,7 @@ app.wsgi_app = WhiteNoise(app.wsgi_app, root='app/static/', prefix='/', index_fi
 from antlr_plsql import grammar as plsql_grammar, ast as plsql_ast
 from antlr_tsql import grammar as tsql_grammar, ast as tsql_ast
 from shellwhat.State import State
-shell_ast = State.get_dispatcher().ast
+from shellwhat.parsers import DEFAULT_PARSER as shell_ast
 
 import ast as python_ast
 from antlr_ast.ast import parse as parse_ast, process_tree
