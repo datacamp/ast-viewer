@@ -66,21 +66,23 @@ var grammars = [
         start: 'NA',
         show_parse: false
     },
-    {
-        name: 'bash-simple',
-        show_parse: false,
-        start: 'NA'
-    },
-    {
-        name: 'bash-verbose',
-        show_parse: false,
-        start: 'NA'
-    },
-    {
-        name: 'bash-vorpal',
-        show_parse: false,
-        start: 'NA'
-    },
+    // These parsers are not used in production
+    // so don't show them in the UI
+    // {
+    //     name: 'bash-simple',
+    //     show_parse: false,
+    //     start: 'NA'
+    // },
+    // {
+    //     name: 'bash-verbose',
+    //     show_parse: false,
+    //     start: 'NA'
+    // },
+    // {
+    //     name: 'bash-vorpal',
+    //     show_parse: false,
+    //     start: 'NA'
+    // },
 ]
 
 import CodeGraph from './code-graph.vue'
