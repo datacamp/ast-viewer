@@ -113,8 +113,6 @@ def final_ast():
 
 def ast_request(ast_function):
     args = request.args
-    print(args)
-
     ast = ast_function(args['parser'], args['code'], args['start'])
     if ast is None: return make_response("Incorrect parser name", 400)
 
@@ -124,9 +122,7 @@ def ast_request(ast_function):
 @app.route('/ast-from-config', methods = ['GET', 'POST'])
 def ast_from_config():
     files = request.files
-    print(files['file'])
     data = yaml.safe_load(files['file'])
-    print(data)
     ast_parser = ast_parsers.get(data['parser_name'])
 
     code = data['code']

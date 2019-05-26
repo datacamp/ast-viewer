@@ -22,9 +22,9 @@ RUN pip3 install -r requirements.txt -r req-parsers.txt
 
 # install osh AST generator
 # Note, we make sure python -> python2.7, so the oil build scripts won't use python3
-RUN mkdir -p /usr/bin/python2_7 && ln /usr/bin/python2.7 /usr/bin/python2_7/python \
-    && git clone -b dev-comms https://github.com/datacamp/oil.git \
-    && PATH="/usr/bin/python2_7:$PATH" pip2 install -e ./oil
+ARG LIBS=/var/lib/python/site-packages
+RUN mkdir -p $LIBS/python2
+RUN pip2 install git+https://github.com/datacamp/oil.git@ast/v0.1.1 --target $LIBS/python2
 
 # Build frontend
 COPY config.py run.py Makefile ./

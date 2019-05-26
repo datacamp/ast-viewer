@@ -15,7 +15,7 @@
 
     <div class="container">
         <p>
-            ANTLR AST:
+            ANTLR parse tree:
             <label>collapse tree: <input type="checkbox" v-model="optCollapse"></label>
         </p>
         <code-graph graph-type="parser" :graph-data="antlrData" :opt-collapse="optCollapse"></code-graph>
