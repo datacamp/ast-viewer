@@ -15,7 +15,7 @@
 
     <div class="container">
         <p>
-            ANTLR AST:
+            ANTLR parse tree:
             <label>collapse tree: <input type="checkbox" v-model="optCollapse"></label>
         </p>
         <code-graph graph-type="parser" :graph-data="antlrData" :opt-collapse="optCollapse"></code-graph>
@@ -145,7 +145,7 @@ export default {
                         this.baseAstData = data
                     })
             else
-                this.antlrData = {}
+                this.baseAstData = {}
         },
 
         getAliasAst () {
@@ -155,7 +155,7 @@ export default {
                         this.aliasAstData = data
                     })
             else
-                this.antlrData = {}
+                this.aliasAstData = {}
         },
 
         getAst () {
