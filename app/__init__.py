@@ -9,6 +9,7 @@ app.wsgi_app = WhiteNoise(app.wsgi_app, root='app/static/', prefix='/', index_fi
 # Helper funcs ----------------------------------------------------------------
 from antlr_plsql import grammar as plsql_grammar, ast as plsql_ast
 from antlr_tsql import grammar as tsql_grammar, ast as tsql_ast
+from antlr_scala import grammar as scala_grammar, ast as scala_ast
 from shellwhat.State import State
 from shellwhat.parsers import DEFAULT_PARSER as shell_ast
 
@@ -19,13 +20,15 @@ from .ast_dump import dump_node
 
 grammars = {
     'plsql': plsql_grammar,
-    'tsql': tsql_grammar
+    'tsql': tsql_grammar,
+    'scala': scala_grammar
 }
 
 ast_parsers = {
     'python': python_ast,
     'plsql': plsql_ast,
     'tsql': tsql_ast,
+    'scala': scala_ast,
     'shell': shell_ast
 }
 
@@ -36,7 +39,7 @@ def get_antlr_ast(grammar_name, code, start):
 
 
 def get_base_ast(grammar_name, code, start):
-    if 'sql' in grammar_name:
+    if 'sql' in grammar_name or 'scala' in grammar_name:
         grammar = grammars.get(grammar_name)
         tree = parse_ast(grammar, code, start)
         return process_tree(tree, simplify=False)
@@ -46,7 +49,7 @@ def get_base_ast(grammar_name, code, start):
 
 
 def get_alias_ast(grammar_name, code, start):
-    if 'sql' in grammar_name:
+    if 'sql' in grammar_name or 'scala' in grammar_name:
         grammar = grammars.get(grammar_name)
         parser = ast_parsers.get(grammar_name)
         tree = parse_ast(grammar, code, start)
@@ -58,7 +61,7 @@ def get_alias_ast(grammar_name, code, start):
 
 def get_ast(parser_name, code, start):
     parser = ast_parsers.get(parser_name)
-    if 'sql' in parser_name:
+    if 'sql' in parser_name or 'scala' in parser_name:
         return parser.parse(code, start)
     else:
         try:

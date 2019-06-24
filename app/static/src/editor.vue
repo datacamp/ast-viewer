@@ -57,6 +57,11 @@ var grammars = [
         show_parse: true
     },
     {
+        name: 'scala',
+        start: 'compOrREPL',
+        show_parse: true
+    },
+    {
         name: 'python',
         start: 'NA',
         show_parse: false
