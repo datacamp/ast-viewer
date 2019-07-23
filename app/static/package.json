@@ -8,6 +8,7 @@
     "cytoscape": "^3.2.18",
     "cytoscape-dagre": "^2.2.2",
     "dagre": "^0.8.2",
+    "lodash": "^4.17.14",
     "superagent": "^3.8.3",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
