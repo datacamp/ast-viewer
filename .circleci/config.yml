@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
-  datacamp-ecr: datacamp/ecr@0.0.6
-  datacamp-deploy: datacamp/deploy@0.0.25
+  datacamp-ecr: datacamp/ecr@0
+  datacamp-deploy: datacamp/deploy@1
 workflows:
   version: 2.1 
   build_and_deploy:
@@ -16,8 +16,9 @@ workflows:
           context: org-global
           requires:
             - datacamp-ecr/build_and_push_image_to_ecr
-          ecs-deploy-url: $STAGING_DEPLOY_URL
-          ecs-deploy-password: $STAGING_ECS_DEPLOY_PASSWORD
+          new-deploy-opt-in: true
+          deploy-url: $STAGING_LAMBDA_DEPLOY_URL
+          deploy-password: $STAGING_LAMBDA_DEPLOY_PASSWORD
           extra-env: "DESIRED_COUNT=1 CLUSTER=datacamp-services SERVICE=ast-viewer"
           filters:
             branches:
@@ -38,8 +39,9 @@ workflows:
               only: /^v.*/
             branches:
               ignore: /.*/
-          ecs-deploy-url: $PROD_DEPLOY_URL
-          ecs-deploy-password: $PROD_ECS_DEPLOY_PASSWORD
+          new-deploy-opt-in: true
+          deploy-url: $PROD_LAMBDA_DEPLOY_URL
+          deploy-password: $PROD_LAMBDA_DEPLOY_PASSWORD
           extra-env: "DESIRED_COUNT=2 CLUSTER=datacamp-services SERVICE=ast-viewer"
       - datacamp-deploy/backstage-deploy:
           context: org-global
