@@ -100,17 +100,17 @@ workflows:
           aws-secret-access-key: $STAGING_AWS_SECRET_ACCESS_KEY
           account-url: $STAGING_ECR_URL
           extra-docker-args: "--build-arg NPM_TOKEN=$NPM_TOKEN"
-      - datacamp-deploy/deploy:
-          context: org-global
-          requires:
-            - datacamp-ecr/build_and_push_image_to_ecr
-          new-deploy-opt-in: true
-          deploy-url: $STAGING_LAMBDA_DEPLOY_URL
-          deploy-password: $STAGING_LAMBDA_DEPLOY_PASSWORD
-          extra-env: "DESIRED_COUNT=1 CLUSTER=datacamp-services SERVICE=ast-viewer"
-          filters:
-            branches:
-              only: master
+      # - datacamp-deploy/deploy:
+      #     context: org-global
+      #     requires:
+      #       - datacamp-ecr/build_and_push_image_to_ecr
+      #     new-deploy-opt-in: true
+      #     deploy-url: $STAGING_LAMBDA_DEPLOY_URL
+      #     deploy-password: $STAGING_LAMBDA_DEPLOY_PASSWORD
+      #     extra-env: "DESIRED_COUNT=1 CLUSTER=datacamp-services SERVICE=ast-viewer"
+      #     filters:
+      #       branches:
+      #         only: master
       - datacamp-ecr/pull_push_to_account:
           context: org-global
           filters:
@@ -118,19 +118,19 @@ workflows:
               only: /^v.*/
             branches:
               ignore: /.*/
-      - datacamp-deploy/deploy:
-          context: org-global
-          requires:
-            - datacamp-ecr/pull_push_to_account
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
-          new-deploy-opt-in: true
-          deploy-url: $PROD_LAMBDA_DEPLOY_URL
-          deploy-password: $PROD_LAMBDA_DEPLOY_PASSWORD
-          extra-env: "DESIRED_COUNT=2 CLUSTER=datacamp-services SERVICE=ast-viewer"
+      # - datacamp-deploy/deploy:
+      #     context: org-global
+      #     requires:
+      #       - datacamp-ecr/pull_push_to_account
+      #     filters:
+      #       tags:
+      #         only: /^v.*/
+      #       branches:
+      #         ignore: /.*/
+      #     new-deploy-opt-in: true
+      #     deploy-url: $PROD_LAMBDA_DEPLOY_URL
+      #     deploy-password: $PROD_LAMBDA_DEPLOY_PASSWORD
+      #     extra-env: "DESIRED_COUNT=2 CLUSTER=datacamp-services SERVICE=ast-viewer"
       - datacamp-deploy/backstage-deploy:
           context: org-global
           requires:
