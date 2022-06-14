@@ -25,10 +25,18 @@ workflows:
           dockerfile: Dockerfile
           docker-version: 20.10.2
           executor: datacamp-artifactory/buildkit
-          repo: campus
           requires:
             - queue
-
+      - datacamp-artifactory/tag_image:
+          name: tag_image
+          context: org-global
+          docker-version: 20.10.2
+          executor: datacamp-artifactory/buildkit
+          filters:
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
+            branches:
+              ignore: /.*/
       # - datacamp-artifactory/tag_repository:
       #     name: tag
       #     context: org-global
@@ -48,7 +56,6 @@ workflows:
           dockerfile: Dockerfile
           docker-version: 20.10.2
           executor: datacamp-artifactory/buildkit
-          repo: campus
           filters:
             branches:
               only:
@@ -56,7 +63,7 @@ workflows:
       - datacamp-deploy-branch/deploy: # Backstage branch deploy
           name: deploy-to-backstage
           context: org-global
-          app: campus
+          app: ast-viewer
           env: staging
           roles: terraform-role,k8s-role
           region: us-east-1
@@ -80,7 +87,7 @@ workflows:
       - datacamp-deploy-branch/deploy:
           name: cleandown-backstage
           context: org-global
-          app: campus
+          app: ast-viewer
           env: staging
           roles: app-cleandown-role
           extra-vars: 'backstage=true'
