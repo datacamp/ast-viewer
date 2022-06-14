@@ -27,6 +27,7 @@ workflows:
           executor: datacamp-artifactory/buildkit
           requires:
             - queue
+
       - datacamp-artifactory/tag_image:
           name: tag_image
           context: org-global
@@ -37,6 +38,7 @@ workflows:
               only: /^v\d+\.\d+\.\d+$/
             branches:
               ignore: /.*/
+              
       # - datacamp-artifactory/tag_repository:
       #     name: tag
       #     context: org-global
