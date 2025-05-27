@@ -24,7 +24,6 @@ workflows:
           git_tag_filter: '--match "[0-9]*.[0-9]*.[0-9]*"'
           extra-docker-args: '--build-arg NPM_TOKEN=$NPM_TOKEN_INSTALL_PACKAGES_READ'
           dockerfile: Dockerfile
-          docker-version: 20.10.2
           executor: datacamp-artifactory/buildkit
           requires:
             - queue
@@ -59,7 +58,6 @@ workflows:
           context: org-global
           extra-docker-args: "--build-arg NPM_TOKEN=$NPM_TOKEN_INSTALL_PACKAGES_READ"
           dockerfile: Dockerfile
-          docker-version: 20.10.2
           executor: datacamp-artifactory/buildkit
           filters:
             branches:
